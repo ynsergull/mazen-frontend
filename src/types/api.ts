@@ -90,3 +90,27 @@ export interface SearchResponse {
   query: string;
   products: Paginated<ProductSummary>;
 }
+
+export interface CartItem {
+  product: ProductSummary;
+  qty: number;
+  unit_price: number;
+  line_total: number;
+  max_qty: number;
+}
+
+export interface Cart {
+  token: string | null;
+  items: CartItem[];
+  item_count: number;
+  subtotal: number;
+  shipping_fee: number;
+  free_shipping_threshold: number;
+  total: number;
+}
+
+/** Laravel 422 cevabi */
+export interface ValidationErrorBody {
+  message: string;
+  errors?: Record<string, string[]>;
+}

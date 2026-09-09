@@ -2,8 +2,9 @@ import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { ImageOff, PackageCheck, PackageX, ShoppingCart } from "lucide-react";
+import { ImageOff, PackageCheck, PackageX } from "lucide-react";
 
+import { AddToCartButton } from "@/components/cart/add-to-cart-button";
 import { ProductGrid } from "@/components/site/product-grid";
 import { Badge } from "@/components/ui/badge";
 import {
@@ -14,7 +15,6 @@ import {
   BreadcrumbPage,
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
-import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { getProductPage } from "@/lib/api";
 import { formatPrice } from "@/lib/format";
@@ -119,9 +119,7 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
             <Badge variant="secondary" className="gap-1"><PackageX className="size-3.5" /> Tükendi</Badge>
           )}
 
-          <Button size="lg" className="w-full md:w-auto" disabled>
-            <ShoppingCart className="size-4" /> Sepete ekle (yakında)
-          </Button>
+          <AddToCartButton productId={product.id} inStock={product.in_stock} maxQty={product.stock_qty} />
 
           {product.description && (
             <>

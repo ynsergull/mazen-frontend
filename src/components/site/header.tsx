@@ -1,6 +1,7 @@
 import Link from "next/link";
-import { Menu, ShoppingCart, User } from "lucide-react";
+import { Menu, User } from "lucide-react";
 
+import { CartBadge } from "@/components/cart/cart-badge";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
 import { getCategoryTree } from "@/lib/api";
@@ -46,9 +47,7 @@ export async function SiteHeader() {
           <Button variant="ghost" size="icon" aria-label="Hesabım" disabled>
             <User className="size-5" />
           </Button>
-          <Button variant="ghost" size="icon" aria-label="Sepet" disabled>
-            <ShoppingCart className="size-5" />
-          </Button>
+          <CartBadge />
         </div>
       </div>
 
