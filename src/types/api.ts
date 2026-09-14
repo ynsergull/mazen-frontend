@@ -114,3 +114,49 @@ export interface ValidationErrorBody {
   message: string;
   errors?: Record<string, string[]>;
 }
+
+export interface User {
+  id: number;
+  name: string;
+  email: string;
+  phone: string | null;
+  created_at: string | null;
+}
+
+export type InvoiceType = "individual" | "corporate";
+
+export interface Address {
+  id: number;
+  title: string;
+  first_name: string;
+  last_name: string;
+  phone: string;
+  province: string;
+  district: string;
+  address_line: string;
+  postal_code: string | null;
+  invoice_type: InvoiceType;
+  tc_no_masked: string | null;
+  company_name: string | null;
+  tax_office: string | null;
+  tax_number: string | null;
+  is_default: boolean;
+}
+
+/** Adres formu gonderimi (tc_no sadece yeni girilirse dolu) */
+export interface AddressInput {
+  title: string;
+  first_name: string;
+  last_name: string;
+  phone: string;
+  province: string;
+  district: string;
+  address_line: string;
+  postal_code: string;
+  invoice_type: InvoiceType;
+  tc_no: string;
+  company_name: string;
+  tax_office: string;
+  tax_number: string;
+  is_default: boolean;
+}

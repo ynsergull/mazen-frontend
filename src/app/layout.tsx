@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import { Suspense } from "react";
 
+import { AuthProvider } from "@/components/auth/auth-provider";
 import { CartProvider } from "@/components/cart/cart-provider";
 import { SiteFooter } from "@/components/site/footer";
 import { SiteHeader } from "@/components/site/header";
@@ -19,13 +20,15 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
     <html lang="tr" className={`${inter.variable} h-full antialiased`}>
       <body className="flex min-h-full flex-col bg-background text-foreground">
-        <CartProvider>
-          <Suspense fallback={<div className="h-14 border-b" />}>
-            <SiteHeader />
-          </Suspense>
-          <main className="mx-auto w-full max-w-7xl flex-1 px-4 py-6">{children}</main>
-          <SiteFooter />
-        </CartProvider>
+        <AuthProvider>
+          <CartProvider>
+            <Suspense fallback={<div className="h-14 border-b" />}>
+              <SiteHeader />
+            </Suspense>
+            <main className="mx-auto w-full max-w-7xl flex-1 px-4 py-6">{children}</main>
+            <SiteFooter />
+          </CartProvider>
+        </AuthProvider>
       </body>
     </html>
   );

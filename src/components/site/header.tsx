@@ -1,6 +1,7 @@
 import Link from "next/link";
-import { Menu, User } from "lucide-react";
+import { Menu } from "lucide-react";
 
+import { UserMenu } from "@/components/auth/user-menu";
 import { CartBadge } from "@/components/cart/cart-badge";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
@@ -44,9 +45,7 @@ export async function SiteHeader() {
         </div>
 
         <div className="ml-auto flex items-center gap-1">
-          <Button variant="ghost" size="icon" aria-label="Hesabım" disabled>
-            <User className="size-5" />
-          </Button>
+          <UserMenu />
           <CartBadge />
         </div>
       </div>

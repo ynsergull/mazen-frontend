@@ -2,6 +2,7 @@
 
 import { createContext, type ReactNode, useCallback, useContext, useEffect, useMemo, useState } from "react";
 
+import { AUTH_CHANGED_EVENT } from "@/components/auth/auth-provider";
 import { ApiError, cartApi, getCartToken } from "@/lib/cart-client";
 import type { Cart } from "@/types/api";
 
@@ -24,6 +25,7 @@ interface CartContextValue {
   setQty: (productId: number, qty: number) => Promise<void>;
   remove: (productId: number) => Promise<void>;
   clear: () => Promise<void>;
+  refresh: () => Promise<void>;
 }
 
 const CartContext = createContext<CartContextValue | null>(null);
@@ -33,9 +35,17 @@ export function CartProvider({ children }: { children: ReactNode }) {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
+  /** Token yoksa API'ye gitmeden bos sepet; varsa (ya da giris yapildiysa) sunucudan yukle. */
+  const refresh = useCallback(async () => {
+    try {
+      setCart(await cartApi.get());
+    } catch {
+      setCart(EMPTY_CART);
+    }
+  }, []);
+
   useEffect(() => {
     let active = true;
-    // token yoksa API'ye gitmeden bos sepet; varsa sunucudan yukle
     const load = getCartToken() ? cartApi.get() : Promise.resolve(EMPTY_CART);
     load
       .then((loaded) => active && setCart(loaded))
@@ -45,6 +55,13 @@ export function CartProvider({ children }: { children: ReactNode }) {
       active = false;
     };
   }, []);
+
+  // giris/cikis → sepet sunucuda birlesir/degisir, yeniden cek
+  useEffect(() => {
+    const handler = () => void refresh();
+    window.addEventListener(AUTH_CHANGED_EVENT, handler);
+    return () => window.removeEventListener(AUTH_CHANGED_EVENT, handler);
+  }, [refresh]);
 
   const run = useCallback(async (operation: () => Promise<Cart>): Promise<boolean> => {
     setError(null);
@@ -62,6 +79,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
       cart,
       loading,
       error,
+      refresh,
       add: (productId, qty = 1) => run(() => cartApi.add(productId, qty)),
       setQty: async (productId, qty) => {
         await run(() => cartApi.setQty(productId, qty));
@@ -73,7 +91,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
         await run(() => cartApi.clear());
       },
     }),
-    [cart, loading, error, run]
+    [cart, loading, error, run, refresh]
   );
 
   return <CartContext.Provider value={value}>{children}</CartContext.Provider>;

@@ -14,7 +14,11 @@ const nextConfig: NextConfig = {
     ],
   },
   async rewrites() {
-    return [{ source: "/api/v1/:path*", destination: `${BACKEND_URL}/api/v1/:path*` }];
+    return [
+      { source: "/api/v1/:path*", destination: `${BACKEND_URL}/api/v1/:path*` },
+      // Sanctum CSRF cookie ucu (giris/kayit ve tum yazma istekleri oncesi)
+      { source: "/sanctum/:path*", destination: `${BACKEND_URL}/sanctum/:path*` },
+    ];
   },
 };
 
