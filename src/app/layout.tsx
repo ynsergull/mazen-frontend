@@ -6,6 +6,7 @@ import { AuthProvider } from "@/components/auth/auth-provider";
 import { CartProvider } from "@/components/cart/cart-provider";
 import { SiteFooter } from "@/components/site/footer";
 import { SiteHeader } from "@/components/site/header";
+import { SiteFrame } from "@/components/site/site-frame";
 
 import "./globals.css";
 
@@ -22,11 +23,12 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
       <body className="flex min-h-full flex-col bg-background text-foreground">
         <AuthProvider>
           <CartProvider>
-            <Suspense fallback={<div className="h-14 border-b" />}>
-              <SiteHeader />
-            </Suspense>
-            <main className="mx-auto w-full max-w-7xl flex-1 px-4 py-6">{children}</main>
-            <SiteFooter />
+            <SiteFrame
+              header={<Suspense fallback={<div className="h-14 border-b" />}><SiteHeader /></Suspense>}
+              footer={<SiteFooter />}
+            >
+              {children}
+            </SiteFrame>
           </CartProvider>
         </AuthProvider>
       </body>

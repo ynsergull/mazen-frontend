@@ -1,0 +1,22 @@
+{
+  "generator": "Built-in ImageGen",
+  "purpose": "Mazen homepage design preview; fictional stationery, not actual catalog product photography",
+  "assets": [
+    {
+      "path": "public/images/home/hero.webp",
+      "prompt": "Use case: ads-marketing. Create a landscape 1536x1024 editorial studio photograph for a contemporary Turkish stationery ecommerce homepage. A beautifully art-directed flat lay on a warm pale butter-yellow paper background. A coral red linen notebook and forest green notebook slightly overlapping, a cream open blank notebook, cobalt blue pencil case, orange and blue pencils, pale lavender binder clips, small washi tape rolls and a cream ceramic cup with pencils. Charming restrained Scandinavian editorial styling, tactile real paper and fabric texture, warm directional sunlight and authentic soft shadows. Products fill the composition in a casual diagonal arrangement, viewed directly from above. Premium but approachable, colorful but harmonious. No people, no writing, no logos, no labels, no watermark. This is a photo asset, not a website mockup."
+    },
+    {
+      "path": "public/images/home/notebooks.webp",
+      "prompt": "Use case: product-mockup. Square editorial ecommerce photograph of two beautiful linen covered A5 notebooks, one dusty coral and one pale peach, with small blank cream rectangular labels on covers, an ivory elastic closure and rounded corners. Art directed on a seamless pale warm cream surface, viewed slightly from above, authentic paper and woven cloth textures, gentle sunlight shadows. Objects centered with generous margin, premium stationery catalog photography. No writing, no brand, no watermark."
+    },
+    {
+      "path": "public/images/home/pencils.webp",
+      "prompt": "Use case: product-mockup. Square premium studio ecommerce photo of a fan arrangement of twelve sharpened colorful wooden pencils with pastel coral, butter yellow, mint green, sky blue and lavender painted bodies. Natural wooden tips, arranged into a neat playful fan over a very pale soft pink surface. Centered with generous margin, overhead camera, soft sunlight, real photograph with tactile detail. No text, logos or watermark."
+    },
+    {
+      "path": "public/images/home/desk.webp",
+      "prompt": "Use case: product-mockup. Square editorial photograph of a sculptural cobalt blue metal mesh pencil cup holding several cream, coral and yellow pencils and a pair of terracotta handled scissors, with two binder clips nearby. On a pale lavender seamless background, sunlit studio, subtle realistic shadows, high end stationery product catalog, centered and generous margins. No text, no logo, no watermark."
+    }
+  ]
+}
