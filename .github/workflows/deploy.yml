@@ -49,10 +49,12 @@ jobs:
       - name: Surum numarasi
         run: echo "REL=$(date +%Y%m%d-%H%M%S)" >> $GITHUB_ENV
 
+      # rsync kullanmiyoruz: ubuntu-latest (24.04) imajinda rsync bulunmuyor
       - name: Dosyalari gonder
         run: |
-          rsync -az --delete -e "ssh -i ~/.ssh/id_ed25519" \
-            out/ ${{ secrets.DEPLOY_USER }}@${{ secrets.DEPLOY_HOST }}:${{ env.RELEASES }}/${{ env.REL }}/
+          tar czf - -C out . \
+          | ssh -i ~/.ssh/id_ed25519 ${{ secrets.DEPLOY_USER }}@${{ secrets.DEPLOY_HOST }} \
+              "mkdir -p ${{ env.RELEASES }}/${{ env.REL }} && tar xzf - -C ${{ env.RELEASES }}/${{ env.REL }}"
 
       - name: Yayina al
         run: |
