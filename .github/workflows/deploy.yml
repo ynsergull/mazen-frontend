@@ -17,7 +17,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v5
-      - uses: actions/setup-node@v4
+      - uses: actions/setup-node@v7
         with:
           node-version: '22'
           cache: 'npm'
@@ -39,12 +39,27 @@ jobs:
           cp deploy/activate.sh out/activate.sh
           chmod +x out/activate.sh
 
-      - name: SSH anahtari
+      - name: SSH baglantisini hazirla
+        env:
+          DEPLOY_HOST: ${{ secrets.DEPLOY_HOST }}
+          DEPLOY_USER: ${{ secrets.DEPLOY_USER }}
+          DEPLOY_SSH_KEY: ${{ secrets.DEPLOY_SSH_KEY }}
         run: |
-          mkdir -p ~/.ssh
-          echo "${{ secrets.DEPLOY_SSH_KEY }}" > ~/.ssh/id_ed25519
+          install -m 700 -d ~/.ssh
+          printf '%s\n' "$DEPLOY_SSH_KEY" | tr -d '\r' > ~/.ssh/id_ed25519
           chmod 600 ~/.ssh/id_ed25519
-          ssh-keyscan -H ${{ secrets.DEPLOY_HOST }} >> ~/.ssh/known_hosts
+          cat > ~/.ssh/config <<EOF
+          Host mazen-deploy
+            HostName $DEPLOY_HOST
+            User $DEPLOY_USER
+            IdentityFile ~/.ssh/id_ed25519
+            IdentitiesOnly yes
+            BatchMode yes
+            ConnectTimeout 15
+            StrictHostKeyChecking accept-new
+          EOF
+          chmod 600 ~/.ssh/config
+          ssh mazen-deploy "echo 'SSH baglantisi OK'"
 
       - name: Surum numarasi
         run: echo "REL=$(date +%Y%m%d-%H%M%S)" >> $GITHUB_ENV
@@ -53,10 +68,10 @@ jobs:
       - name: Dosyalari gonder
         run: |
           tar czf - -C out . \
-          | ssh -i ~/.ssh/id_ed25519 ${{ secrets.DEPLOY_USER }}@${{ secrets.DEPLOY_HOST }} \
+          | ssh mazen-deploy \
               "mkdir -p ${{ env.RELEASES }}/${{ env.REL }} && tar xzf - -C ${{ env.RELEASES }}/${{ env.REL }}"
 
       - name: Yayina al
         run: |
-          ssh -i ~/.ssh/id_ed25519 ${{ secrets.DEPLOY_USER }}@${{ secrets.DEPLOY_HOST }} \
+          ssh mazen-deploy \
             "bash ${{ env.RELEASES }}/${{ env.REL }}/activate.sh ${{ env.REL }}"
