@@ -4,11 +4,16 @@ import type { NextConfig } from "next";
 const BACKEND_URL = process.env.BACKEND_URL ?? "http://localhost:8000";
 
 const nextConfig: NextConfig = {
+  // Sunucuya node_modules tasimadan tek klasor halinde deploy edebilmek icin
+  output: "standalone",
   images: {
     remotePatterns: [
       // Laravel public disk (yerel WebP varyantlari)
       { protocol: "http", hostname: "localhost", port: "8000", pathname: "/storage/**" },
       { protocol: "http", hostname: "127.0.0.1", port: "8000", pathname: "/storage/**" },
+      // Canli: Laravel /storage yolunu ayni origin uzerinden servis ediyor
+      { protocol: "https", hostname: "mazenkirtasiye.com", pathname: "/storage/**" },
+      { protocol: "https", hostname: "www.mazenkirtasiye.com", pathname: "/storage/**" },
       // Tedarikci CDN (gorsel henuz indirilmemisse dogrudan)
       { protocol: "https", hostname: "d1y8qveuwztoxr.cloudfront.net", pathname: "/**" },
     ],

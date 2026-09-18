@@ -1,0 +1,60 @@
+name: Deploy frontend
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+concurrency:
+  group: deploy-frontend
+  cancel-in-progress: false
+
+env:
+  RELEASES: /var/www/mazen/frontend/releases
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: 'npm'
+
+      - run: npm ci
+
+      - name: Build
+        env:
+          NEXT_PUBLIC_API_URL: https://mazenkirtasiye.com/api/v1
+          API_URL: https://mazenkirtasiye.com/api/v1
+        run: npm run build
+
+      - name: Standalone ciktiyi topla
+        run: |
+          mkdir -p out
+          cp -r .next/standalone/. out/
+          cp -r .next/static out/.next/static
+          cp -r public out/public
+          cp deploy/activate.sh out/activate.sh
+          chmod +x out/activate.sh
+
+      - name: SSH anahtari
+        run: |
+          mkdir -p ~/.ssh
+          echo "${{ secrets.DEPLOY_SSH_KEY }}" > ~/.ssh/id_ed25519
+          chmod 600 ~/.ssh/id_ed25519
+          ssh-keyscan -H ${{ secrets.DEPLOY_HOST }} >> ~/.ssh/known_hosts
+
+      - name: Surum numarasi
+        run: echo "REL=$(date +%Y%m%d-%H%M%S)" >> $GITHUB_ENV
+
+      - name: Dosyalari gonder
+        run: |
+          rsync -az --delete -e "ssh -i ~/.ssh/id_ed25519" \
+            out/ ${{ secrets.DEPLOY_USER }}@${{ secrets.DEPLOY_HOST }}:${{ env.RELEASES }}/${{ env.REL }}/
+
+      - name: Yayina al
+        run: |
+          ssh -i ~/.ssh/id_ed25519 ${{ secrets.DEPLOY_USER }}@${{ secrets.DEPLOY_HOST }} \
+            "bash ${{ env.RELEASES }}/${{ env.REL }}/activate.sh ${{ env.REL }}"
