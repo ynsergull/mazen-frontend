@@ -15,8 +15,14 @@ import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogDescription, DialogTitle } from "@/components/ui/dialog";
 import { Sheet, SheetContent, SheetDescription, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
 import { formatPrice } from "@/lib/format";
-import { collections, showcaseProducts, type Collection, type ShowcaseProduct } from "./home-data";
+import { CatalogImage } from "@/components/site/catalog-image";
+import type { HomeResponse } from "@/types/api";
 import styles from "./home.module.css";
+
+type ShowcaseProduct = {
+  key: string; slug: string; name: string; subtitle: string; collection: string;
+  image: string; price: number; badge: string; colors: string[]; description: string;
+};
 
 const categories = [
   { name: "Defter & ajanda", note: "Yeni bir sayfa", icon: BookOpen, color: "peach", query: "defter" },
@@ -46,7 +52,7 @@ function ProductCard({ product, saved, onSave, onPreview }: {
     <article className={styles.productCard}>
       <div className={styles.productImage}>
         <button className={styles.imageButton} onClick={onPreview} aria-label={`${product.name} ürününü incele`}>
-          <Image src={product.image} alt={product.name} fill sizes="(max-width: 600px) 46vw, (max-width: 1000px) 45vw, 23vw" />
+          <CatalogImage src={product.image} alt={product.name} fill sizes="(max-width: 600px) 46vw, (max-width: 1000px) 45vw, 23vw" className="object-contain bg-white p-4" />
         </button>
         <span className={styles.productBadge}>{product.badge}</span>
         <button
@@ -72,13 +78,19 @@ function ProductCard({ product, saved, onSave, onPreview }: {
   );
 }
 
-export function HomeStorefront() {
-  const [collection, setCollection] = useState<Collection>("Tümü");
+export function HomeStorefront({ data }: { data: HomeResponse }) {
+  const showcaseProducts: ShowcaseProduct[] = data.latest_products.map((product) => ({
+    key: String(product.id), slug: product.slug, name: product.name,
+    subtitle: `Ürün kodu: ${product.sku}`, collection: product.brand?.name ?? "Mazen kataloğu",
+    image: product.image?.card ?? "", price: product.price,
+    badge: product.in_stock ? "Tedarikçide mevcut" : "Stokta yok", colors: [],
+    description: "Ürün detaylarını inceleyebilir, mevcut ürünleri sepetine ekleyebilirsin.",
+  }));
   const [saved, setSaved] = useState<string[]>([]);
   const [preview, setPreview] = useState<ShowcaseProduct | null>(null);
   const [favoritesOpen, setFavoritesOpen] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
-  const visibleProducts = showcaseProducts.filter((product) => collection === "Tümü" || product.collection === collection);
+  const visibleProducts = showcaseProducts;
 
   function toggleSaved(key: string) {
     setSaved((current) => current.includes(key) ? current.filter((item) => item !== key) : [...current, key]);
@@ -103,6 +115,7 @@ export function HomeStorefront() {
               <SheetTitle className="mt-8 text-2xl">Neler keşfetmek istersin?</SheetTitle>
               <SheetDescription>Okula, masaya, hayallerine.</SheetDescription>
               <nav aria-label="Mobil kategoriler" className="mt-5 flex flex-col gap-1">
+                <Link href="/urunler" onClick={() => setMenuOpen(false)} className="py-3 font-semibold">Tüm ürünler →</Link>
                 {categories.map(({ name, query, icon: Icon }) => (
                   <Link key={name} href={`/arama?q=${encodeURIComponent(query)}`} onClick={() => setMenuOpen(false)} className="flex min-h-14 items-center gap-3 border-b border-black/10 py-3 text-base">
                     <Icon size={20} /> {name} <ArrowUpRight size={16} className="ml-auto" />
@@ -128,7 +141,7 @@ export function HomeStorefront() {
           </div>
         </div>
         <nav className={`${styles.container} ${styles.navigation}`} aria-label="Ana kategoriler">
-          <a href="#kesfet" className={styles.newLink}><Sparkles size={15} /> Yeni keşifler</a>
+          <Link href="/urunler" className={styles.newLink}><Sparkles size={15} /> Tüm ürünler</Link>
           {categories.map(({ name, query }) => <Link key={name} href={`/arama?q=${encodeURIComponent(query)}`}>{name}</Link>)}
           <a href="#ilham" className={styles.inspirationLink}>Biraz ilham <ArrowUpRight size={14} /></a>
         </nav>
@@ -172,17 +185,17 @@ export function HomeStorefront() {
         <section id="kesfet" className={`${styles.container} ${styles.productSection}`} aria-labelledby="products-title">
           <div className={styles.sectionHeading}>
             <div><span className={styles.eyebrow}>BAKARKEN BİLE İYİ GELİR</span><h2 id="products-title">Masana çok yakışacak.</h2></div>
-            <a href="#koleksiyonlar" className={styles.textLink}>Koleksiyonları keşfet <ArrowUpRight size={18} /></a>
+            <Link href="/urunler" className={styles.textLink}>Tüm ürünleri gör <ArrowUpRight size={18} /></Link>
           </div>
           <div className={styles.productToolbar}>
-            <div className={styles.filters} role="group" aria-label="Ürün seçkisini filtrele">
-              {collections.map((item) => (
-                <button key={item} aria-pressed={collection === item} onClick={() => setCollection(item)} className={collection === item ? styles.activeFilter : ""}>{item}</button>
-              ))}
+            <div className={styles.filters}>
+              <Link href="/urunler">Tüm katalog</Link>
+              <Link href="/urunler?in_stock=1">Stoktakiler</Link>
+              <Link href="/urunler?sort=price_asc">Uygun fiyatlılar</Link>
             </div>
-            <span className={styles.previewNote}>Vitrin önizlemesi · örnek ürünler</span>
+            <span className={styles.previewNote}>{data.stats.published_products.toLocaleString("tr-TR")} ürün keşfedilmeyi bekliyor</span>
           </div>
-          <p className="sr-only" role="status">{collection}: {visibleProducts.length} örnek ürün gösteriliyor.</p>
+          <p className="sr-only">Katalogdan {visibleProducts.length} ürün gösteriliyor.</p>
           <div className={styles.productGrid}>
             {visibleProducts.map((product) => (
               <ProductCard key={product.key} product={product} saved={saved.includes(product.key)} onSave={() => toggleSaved(product.key)} onPreview={() => setPreview(product)} />
@@ -191,11 +204,11 @@ export function HomeStorefront() {
         </section>
 
         <section id="koleksiyonlar" className={`${styles.container} ${styles.collections}`} aria-label="İlham veren koleksiyonlar">
-          <a href="#kesfet" onClick={() => setCollection("Defter & ajanda")} className={`${styles.collectionCard} ${styles.notebookCollection}`}>
+          <a href="/urunler?q=defter" className={`${styles.collectionCard} ${styles.notebookCollection}`}>
             <div className={styles.collectionCopy}><span className={styles.eyebrow}>BİR SAYFA, BİN İHTİMAL</span><h2>Aklındakileri<br />kâğıda dök.</h2><span className={styles.collectionLink}>Defterleri keşfet <ArrowUpRight size={19} /></span></div>
             <div className={styles.collectionImage}><Image src="/images/home/notebooks.webp" alt="Mercan ve şeftali tonlarında keten defterler" fill sizes="(max-width: 700px) 55vw, 27vw" /></div>
           </a>
-          <a href="#kesfet" onClick={() => setCollection("Kalem & boya")} className={`${styles.collectionCard} ${styles.artCollection}`}>
+          <a href="/urunler?q=boya" className={`${styles.collectionCard} ${styles.artCollection}`}>
             <div className={styles.collectionCopy}><span className={styles.eyebrow}>MÜKEMMEL OLMASI GEREKMEZ</span><h2>Biraz çiz.<br />Çokça eğlen.</h2><span className={styles.collectionLink}>Renkleri keşfet <ArrowUpRight size={19} /></span></div>
             <div className={styles.collectionImage}><Image src="/images/home/pencils.webp" alt="Yelpaze şeklinde sıralanmış pastel boya kalemleri" fill sizes="(max-width: 700px) 55vw, 27vw" /></div>
           </a>
@@ -212,7 +225,7 @@ export function HomeStorefront() {
               <h2>Günün en güzel<br />fikrine <em>yer aç.</em></h2>
               <p>Bazen yeni bir defter, bazen en sevdiğin renkte bir kalem. Küçük şeylerin kocaman bir heyecan yarattığına inanıyoruz.</p>
               <p>Mazen, okul çantandan çalışma masana kadar sana eşlik edecek güzel şeyleri bir araya getiriyor.</p>
-              <a href="#kesfet" onClick={() => setCollection("Masa düzeni")} className={styles.textLink}>Kendi köşeni oluştur <ArrowUpRight size={19} /></a>
+              <a href="/urunler?q=kalemlik" className={styles.textLink}>Kendi köşeni oluştur <ArrowUpRight size={19} /></a>
             </div>
           </div>
         </section>
@@ -231,21 +244,21 @@ export function HomeStorefront() {
           <div><h2>Senin Mazen’in</h2><Link href="/hesap">Hesabım</Link><Link href="/hesap/siparisler">Siparişlerim</Link><Link href="/sepet">Sepetim</Link><button onClick={() => setFavoritesOpen(true)}>Beğendiklerim</button></div>
           <div className={styles.footerMessage}><Asterisk size={40} /><p>Güzel şeyler,<br /><em>birlikte daha güzel.</em></p><a href="#ana-icerik">Başa dön ↑</a></div>
         </div>
-        <div className={`${styles.container} ${styles.footerBottom}`}><span>© {new Date().getFullYear()} Mazen Kırtasiye</span><span>Tasarım önizlemesi · Ürünler ve fiyatlar örnektir.</span><span>Biraz renk. Bolca sen.</span></div>
+        <div className={`${styles.container} ${styles.footerBottom}`}><span>© {new Date().getFullYear()} Mazen Kırtasiye</span><Link href="/urunler">Gerçek ürünler · Tüm kataloğu keşfet</Link><span>Biraz renk. Bolca sen.</span></div>
       </footer>
 
       <Dialog open={preview !== null} onOpenChange={(open) => { if (!open) setPreview(null); }}>
         <DialogContent className={`${styles.previewDialog} sm:max-w-3xl`} showCloseButton={false}>
           {preview && <>
             <button className={styles.dialogClose} onClick={() => setPreview(null)} aria-label="Ürün önizlemesini kapat"><X size={22} /></button>
-            <div className={styles.dialogImage}><Image src={preview.image} alt={preview.name} fill sizes="(max-width: 700px) 85vw, 400px" /></div>
+            <div className={styles.dialogImage}><CatalogImage src={preview.image} alt={preview.name} fill sizes="(max-width: 700px) 85vw, 400px" className="object-contain bg-white p-5" /></div>
             <div className={styles.dialogInfo}>
               <span className={styles.eyebrow}>{preview.collection}</span>
               <DialogTitle className={styles.dialogTitle}>{preview.name}</DialogTitle>
               <DialogDescription>{preview.description}</DialogDescription>
               <p className={styles.dialogPrice}>{formatPrice(preview.price)}</p>
-              <p className={styles.dialogNotice}>Bu bir tasarım önizlemesidir. Ürün ve fiyat örnektir; satın alınamaz.</p>
-              <Button className={styles.primaryButton} render={<Link href={`/arama?q=${encodeURIComponent(preview.searchTerm)}`} />}>Katalogda benzerlerini ara <ArrowRight size={18} /></Button>
+              <p className={styles.dialogNotice}>{preview.badge}. Katalog ve sepet açık; online ödeme hazırlık aşamasında.</p>
+              <Button className={styles.primaryButton} render={<Link href={`/urun/${preview.slug}`} />}>Ürünü incele <ArrowRight size={18} /></Button>
               <Button variant="outline" className={styles.dialogSave} onClick={() => toggleSaved(preview.key)}>
                 {saved.includes(preview.key) ? <Check size={18} /> : <Heart size={18} />}
                 {saved.includes(preview.key) ? "Beğendiklerimde" : "Beğendiklerime ekle"}
@@ -258,13 +271,13 @@ export function HomeStorefront() {
       <Sheet open={favoritesOpen} onOpenChange={setFavoritesOpen}>
         <SheetContent className="overflow-y-auto bg-[#fcfaf5] p-6 sm:max-w-md">
           <SheetTitle className="mt-8 text-2xl">Beğendiklerin <span className="text-[#bc432f]">({saved.length})</span></SheetTitle>
-          <SheetDescription>Bu oturumda kalbini çalan örnek ürünler.</SheetDescription>
+          <SheetDescription>Bu sayfada bulunduğun süre boyunca beğendiğin ürünler.</SheetDescription>
           {saved.length === 0 ? (
             <div className={styles.emptyFavorites}><Heart size={40} strokeWidth={1.2} /><h3>Güzel bir şey bulalım.</h3><p>Ürünlerdeki kalbe dokun,<br />beğendiklerin burada biriksin.</p><Button className={styles.primaryButton} onClick={() => setFavoritesOpen(false)}>Keşfetmeye devam et <ArrowRight size={18} /></Button></div>
           ) : (
             <div className={styles.favoriteList}>{showcaseProducts.filter((product) => saved.includes(product.key)).map((product) => (
               <div key={product.key} className={styles.favoriteItem}>
-                <Image src={product.image} alt={product.name} width={84} height={84} />
+                <CatalogImage src={product.image} alt={product.name} width={84} height={84} />
                 <button onClick={() => { setFavoritesOpen(false); setPreview(product); }}><strong>{product.name}</strong><span>{formatPrice(product.price)}</span></button>
                 <button aria-label={`${product.name} ürününü beğendiklerimden çıkar`} onClick={() => toggleSaved(product.key)}><X size={18} /></button>
               </div>

@@ -1,6 +1,6 @@
 "use client";
 
-import Image from "next/image";
+import { CatalogImage as Image } from "@/components/site/catalog-image";
 import Link from "next/link";
 import { ImageOff, Minus, Plus, ShoppingBag, Trash2 } from "lucide-react";
 

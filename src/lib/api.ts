@@ -6,6 +6,8 @@ import type {
   HomeResponse,
   ProductPageResponse,
   SearchResponse,
+  Paginated,
+  ProductSummary,
 } from "@/types/api";
 
 const API_URL =
@@ -47,6 +49,12 @@ export async function apiGet<T>(path: string, options: ApiOptions = {}): Promise
 export async function getHome(): Promise<HomeResponse> {
   const data = await apiGet<HomeResponse>("/home", { tags: [CACHE_TAGS.products, CACHE_TAGS.categories] });
   if (!data) throw new Error("Ana sayfa verisi alinamadi");
+  return data;
+}
+
+export async function getCatalog(query: Query): Promise<Paginated<ProductSummary>> {
+  const data = await apiGet<Paginated<ProductSummary>>("/products", { query, revalidate: 300 });
+  if (!data) throw new Error("Katalog yüklenemedi");
   return data;
 }
 

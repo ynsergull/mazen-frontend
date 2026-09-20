@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import Image from "next/image";
+import { CatalogImage as Image } from "@/components/site/catalog-image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { ImageOff, PackageCheck, PackageX } from "lucide-react";
@@ -114,7 +114,7 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
           <p className="text-xs text-muted-foreground">KDV dahil</p>
 
           {product.in_stock ? (
-            <Badge className="gap-1 bg-green-600 hover:bg-green-600"><PackageCheck className="size-3.5" /> Stokta — 1-3 iş günü içinde kargoda</Badge>
+            <Badge className="gap-1 bg-green-600 hover:bg-green-600"><PackageCheck className="size-3.5" /> Tedarikçide mevcut</Badge>
           ) : (
             <Badge variant="secondary" className="gap-1"><PackageX className="size-3.5" /> Tükendi</Badge>
           )}
@@ -140,7 +140,7 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
         </section>
       )}
 
-      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd).replace(/</g, "\\u003c") }} />
     </div>
   );
 }

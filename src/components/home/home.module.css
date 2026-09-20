@@ -105,8 +105,8 @@
 .textLink:hover { color: var(--coral); }
 .productToolbar { display: flex; align-items: center; justify-content: space-between; gap: 20px; margin-block: -5px 23px; }
 .filters { display: flex; flex-wrap: wrap; gap: 8px; }
-.filters button { min-height: 39px; padding: 9px 18px; border: 1px solid var(--line); border-radius: 4px; font-size: 11px; transition: background .18s, color .18s; }
-.filters button:hover { background: #f0ede4; }
+.filters button, .filters a { min-height: 39px; padding: 9px 18px; border: 1px solid var(--line); border-radius: 4px; font-size: 11px; transition: background .18s, color .18s; }
+.filters button:hover, .filters a:hover { background: #f0ede4; }
 .filters .activeFilter { background: #303d33; border-color: #303d33; color: white; }
 .filters .activeFilter:hover { background: #303d33; }
 .previewNote { color: #79796f; font-size: 9px; }
@@ -114,7 +114,7 @@
 .productCard { min-width: 0; }
 .productImage { position: relative; aspect-ratio: 1 / 1.14; overflow: hidden; border-radius: 5px; background: #eee8df; }
 .imageButton { position: absolute; inset: 0; width: 100%; height: 100%; }
-.imageButton > img { object-fit: cover; transition: transform .5s ease; }
+.imageButton > img { object-fit: contain; transition: transform .5s ease; }
 .productCard:hover .imageButton > img { transform: scale(1.045); }
 .productBadge { position: absolute; top: 12px; left: 12px; max-width: calc(100% - 70px); pointer-events: none; padding: 5px 9px; background: #fcfaf5e8; border-radius: 2px; font-size: 9px; letter-spacing: .02em; }
 .saveButton { position: absolute; top: 5px; right: 5px; display: grid; place-items: center; width: 44px; height: 44px; border-radius: 50%; color: #45433c; background: #fcfaf5e8; transform: scale(.86); transition: color .2s; }
@@ -124,7 +124,7 @@
 .productInfo { padding: 17px 1px 0; }
 .productCollection { display: block; font-size: 8px; text-transform: uppercase; letter-spacing: .12em; color: #7a7b71; }
 .productInfo h3 { margin-top: 7px; font-size: 13px; font-weight: 550; line-height: 1.5; }
-.productInfo h3 button { text-align: left; }
+.productInfo h3 button { text-align: left; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; min-height: 3em; }
 .productInfo h3 button:hover { color: var(--coral); }
 .productInfo > p { margin-top: 4px; font-size: 10px; color: #7b7e72; line-height: 1.5; }
 .productBottom { display: flex; align-items: center; justify-content: space-between; gap: 10px; margin-top: 13px; }
@@ -307,7 +307,7 @@
   .productSection .textLink { font-size: 11px; min-height: 35px; }
   .productToolbar { display: block; margin-bottom: 20px; }
   .filters { flex-wrap: nowrap; gap: 6px; overflow-x: auto; scrollbar-width: none; padding: 4px 0; }
-  .filters button { flex-shrink: 0; min-height: 44px; padding: 9px 13px; font-size: 10px; }
+  .filters button, .filters a { flex-shrink: 0; min-height: 44px; padding: 9px 13px; font-size: 10px; }
   .productGrid { gap: 25px 12px; }
   .productImage { aspect-ratio: 1 / 1.19; }
   .productBadge { top: 8px; left: 8px; padding: 4px 6px; font-size: 8px; }

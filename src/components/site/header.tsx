@@ -22,6 +22,7 @@ export async function SiteHeader() {
           <SheetContent side="left" className="w-80 overflow-y-auto">
             <SheetTitle className="mb-4">Kategoriler</SheetTitle>
             <nav className="flex flex-col gap-1">
+              <Link href="/urunler" className="rounded-md px-3 py-2 font-semibold">Tüm ürünler</Link>
               {topLevel.map((category) => (
                 <Link
                   key={category.id}
@@ -58,6 +59,7 @@ export async function SiteHeader() {
 
       <nav className="hidden border-t lg:block">
         <ul className="mx-auto flex max-w-7xl gap-1 overflow-x-auto px-4">
+          <li><Link href="/urunler" className="block whitespace-nowrap px-3 py-2 text-sm font-semibold">Tüm ürünler</Link></li>
           {topLevel.map((category) => (
             <li key={category.id}>
               <Link
