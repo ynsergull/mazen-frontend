@@ -1,8 +1,30 @@
 import Link from "next/link";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 
-import { Button } from "@/components/ui/button";
 import type { PaginationMeta } from "@/types/api";
+
+import styles from "./storefront.module.css";
+
+/** Gecerli sayfanin cevresinde numaralar, uclarda 1 ve son sayfa; aradakiler "…". */
+function pageWindow(current: number, last: number): (number | "gap")[] {
+  if (last <= 7) return Array.from({ length: last }, (_, i) => i + 1);
+
+  const pages = new Set<number>([1, last, current]);
+  if (current - 1 > 1) pages.add(current - 1);
+  if (current + 1 < last) pages.add(current + 1);
+  if (current <= 3) pages.add(2).add(3).add(4);
+  if (current >= last - 2) pages.add(last - 1).add(last - 2).add(last - 3);
+
+  const sorted = [...pages].filter((page) => page >= 1 && page <= last).sort((a, b) => a - b);
+  const result: (number | "gap")[] = [];
+  let previous = 0;
+  for (const page of sorted) {
+    if (previous && page - previous > 1) result.push("gap");
+    result.push(page);
+    previous = page;
+  }
+  return result;
+}
 
 /** Sayfa numarasini, korunan diger query parametreleriyle birlikte uretir. */
 export function Pagination({ meta, basePath, query }: {
@@ -26,27 +48,45 @@ export function Pagination({ meta, basePath, query }: {
   const hasNext = meta.current_page < meta.last_page;
 
   return (
-    <nav className="mt-8 flex items-center justify-center gap-2" aria-label="Sayfalama">
+    <nav className={styles.pagination} aria-label="Sayfalama">
       {hasPrev ? (
-        <Button variant="outline" size="sm" render={<Link href={href(meta.current_page - 1)} />}>
-          <ChevronLeft className="size-4" /> Önceki
-        </Button>
+        <Link href={href(meta.current_page - 1)} rel="prev" className={styles.pageLink}>
+          <ChevronLeft size={15} aria-hidden="true" />
+          <span>Önceki</span>
+        </Link>
       ) : (
-        <Button variant="outline" size="sm" disabled>
-          <ChevronLeft className="size-4" /> Önceki
-        </Button>
+        <span className={`${styles.pageLink} ${styles.pageLinkDisabled}`} aria-hidden="true">
+          <ChevronLeft size={15} />
+          <span>Önceki</span>
+        </span>
       )}
-      <span className="px-3 text-sm text-muted-foreground">
-        Sayfa {meta.current_page} / {meta.last_page}
-      </span>
+
+      {pageWindow(meta.current_page, meta.last_page).map((page, index) =>
+        page === "gap" ? (
+          <span key={`gap-${index}`} className={styles.pageEllipsis} aria-hidden="true">
+            …
+          </span>
+        ) : page === meta.current_page ? (
+          <span key={page} className={`${styles.pageLink} ${styles.pageLinkActive}`} aria-current="page">
+            {page}
+          </span>
+        ) : (
+          <Link key={page} href={href(page)} className={styles.pageLink} aria-label={`Sayfa ${page}`}>
+            {page}
+          </Link>
+        )
+      )}
+
       {hasNext ? (
-        <Button variant="outline" size="sm" render={<Link href={href(meta.current_page + 1)} />}>
-          Sonraki <ChevronRight className="size-4" />
-        </Button>
+        <Link href={href(meta.current_page + 1)} rel="next" className={styles.pageLink}>
+          <span>Sonraki</span>
+          <ChevronRight size={15} aria-hidden="true" />
+        </Link>
       ) : (
-        <Button variant="outline" size="sm" disabled>
-          Sonraki <ChevronRight className="size-4" />
-        </Button>
+        <span className={`${styles.pageLink} ${styles.pageLinkDisabled}`} aria-hidden="true">
+          <span>Sonraki</span>
+          <ChevronRight size={15} />
+        </span>
       )}
     </nav>
   );

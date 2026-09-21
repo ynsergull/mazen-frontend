@@ -49,38 +49,49 @@
 }
 
 :root {
-  --background: oklch(1 0 0);
-  --foreground: oklch(0.145 0 0);
-  --card: oklch(1 0 0);
-  --card-foreground: oklch(0.145 0 0);
-  --popover: oklch(1 0 0);
-  --popover-foreground: oklch(0.145 0 0);
-  --primary: oklch(0.205 0 0);
-  --primary-foreground: oklch(0.985 0 0);
-  --secondary: oklch(0.97 0 0);
-  --secondary-foreground: oklch(0.205 0 0);
-  --muted: oklch(0.97 0 0);
-  --muted-foreground: oklch(0.556 0 0);
-  --accent: oklch(0.97 0 0);
-  --accent-foreground: oklch(0.205 0 0);
-  --destructive: oklch(0.577 0.245 27.325);
-  --border: oklch(0.922 0 0);
-  --input: oklch(0.922 0 0);
-  --ring: oklch(0.708 0 0);
-  --chart-1: oklch(0.87 0 0);
-  --chart-2: oklch(0.556 0 0);
-  --chart-3: oklch(0.439 0 0);
-  --chart-4: oklch(0.371 0 0);
-  --chart-5: oklch(0.269 0 0);
-  --radius: 0.625rem;
-  --sidebar: oklch(0.985 0 0);
-  --sidebar-foreground: oklch(0.145 0 0);
-  --sidebar-primary: oklch(0.205 0 0);
-  --sidebar-primary-foreground: oklch(0.985 0 0);
-  --sidebar-accent: oklch(0.97 0 0);
-  --sidebar-accent-foreground: oklch(0.205 0 0);
-  --sidebar-border: oklch(0.922 0 0);
-  --sidebar-ring: oklch(0.708 0 0);
+  /* Mazen marka paleti — ana sayfa tasarimindan turetildi */
+  --paper: #fcfaf5;
+  --paper-warm: #f0eadc;
+  --ink: #292c28;
+  --ink-soft: #6c6f64;
+  --coral: #bc432f;
+  --coral-dark: #9c3323;
+  --hairline: #e5e2d9;
+  --deep-green: #283c32;
+  --deep-green-soft: #334b3e;
+
+  --background: #fcfaf5;
+  --foreground: #292c28;
+  --card: #ffffff;
+  --card-foreground: #292c28;
+  --popover: #fcfaf5;
+  --popover-foreground: #292c28;
+  --primary: #bc432f;
+  --primary-foreground: #fffaf7;
+  --secondary: #efece2;
+  --secondary-foreground: #292c28;
+  --muted: #f2efe6;
+  --muted-foreground: #6c6f64;
+  --accent: #eee9dd;
+  --accent-foreground: #292c28;
+  --destructive: #b02a1d;
+  --border: #e5e2d9;
+  --input: #ddd9cd;
+  --ring: #bc432f;
+  --chart-1: #bc432f;
+  --chart-2: #334b3e;
+  --chart-3: #8d7739;
+  --chart-4: #74618e;
+  --chart-5: #547485;
+  --radius: 0.375rem;
+  --sidebar: #f7f4ec;
+  --sidebar-foreground: #292c28;
+  --sidebar-primary: #bc432f;
+  --sidebar-primary-foreground: #fffaf7;
+  --sidebar-accent: #eee9dd;
+  --sidebar-accent-foreground: #292c28;
+  --sidebar-border: #e5e2d9;
+  --sidebar-ring: #bc432f;
 }
 
 .dark {
@@ -126,5 +137,22 @@
   }
   html {
     @apply font-sans;
+  }
+  button:not(:disabled),
+  [role="button"]:not(:disabled) {
+    cursor: pointer;
+  }
+  :is(a, button, summary, input, select, textarea):focus-visible {
+    outline: 2px solid var(--ring);
+    outline-offset: 2px;
+  }
+}
+
+@layer components {
+  /* Ana sayfadan gelen vurgu tipografisi: Georgia italik */
+  .mz-accent-type {
+    font-family: Georgia, "Times New Roman", serif;
+    font-style: italic;
+    font-weight: 400;
   }
 }

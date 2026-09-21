@@ -1,22 +1,22 @@
-"use client";
-
-import { usePathname } from "next/navigation";
 import type { ReactNode } from "react";
 
-/** Ana sayfa tasarımı tamamlanırken diğer sayfaların mevcut düzenini korur. */
+import styles from "./storefront.module.css";
+
+/** Ust bar + icerik + alt bilgi: ana sayfa dahil tum sayfalarda ayni cerceve. */
 export function SiteFrame({ children, header, footer }: {
   children: ReactNode;
   header: ReactNode;
   footer: ReactNode;
 }) {
-  const pathname = usePathname();
-
-  if (pathname === "/") return <>{children}</>;
-
   return (
     <>
+      <a href="#ana-icerik" className={styles.skipLink}>
+        İçeriğe geç
+      </a>
       {header}
-      <main className="mx-auto w-full max-w-7xl flex-1 px-4 py-6">{children}</main>
+      <main id="ana-icerik" className={styles.main}>
+        {children}
+      </main>
       {footer}
     </>
   );

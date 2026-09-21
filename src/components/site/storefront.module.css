@@ -1,0 +1,1359 @@
+/* Mazen vitrin tasarimi: tum sayfalarda paylasilan cerceve ve temel bilesenler. */
+
+/* ---------- Duzen yardimcilari ---------- */
+.container {
+  width: min(1400px, calc(100% - 96px));
+  margin-inline: auto;
+}
+
+.main {
+  flex: 1;
+  min-width: 0;
+}
+
+.page {
+  padding-block: 30px 70px;
+}
+
+.eyebrow {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 10px;
+  line-height: 1.5;
+  font-weight: 600;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: #7b7e70;
+}
+
+.eyebrow > span {
+  width: 6px;
+  height: 6px;
+  background: var(--coral);
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.skipLink {
+  position: fixed;
+  top: -100px;
+  left: 24px;
+  z-index: 100;
+  padding: 16px;
+  background: #fff;
+  border: 1px solid var(--hairline);
+  border-radius: 4px;
+  font-size: 12px;
+}
+
+.skipLink:focus {
+  top: 8px;
+}
+
+/* ---------- Duyuru seridi ---------- */
+.announcement {
+  min-height: 34px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 22px;
+  padding: 7px 16px;
+  background: var(--deep-green-soft);
+  color: #fffdf5;
+  font-size: 11px;
+  letter-spacing: 0.035em;
+}
+
+.announcement > svg {
+  color: #edc679;
+  flex-shrink: 0;
+}
+
+.announcement a {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  white-space: nowrap;
+}
+
+/* ---------- Ust bar ---------- */
+.header {
+  position: sticky;
+  top: 0;
+  z-index: 40;
+  background: var(--paper);
+  border-bottom: 1px solid var(--hairline);
+}
+
+.headerMain {
+  display: flex;
+  align-items: center;
+  gap: 40px;
+  min-height: 95px;
+}
+
+.wordmark {
+  position: relative;
+  display: inline-block;
+  flex-shrink: 0;
+  padding: 0 19px 16px 0;
+  font-size: 43px;
+  line-height: 1;
+  letter-spacing: -0.075em;
+  font-weight: 850;
+  color: var(--ink);
+}
+
+.logoStar {
+  position: absolute;
+  top: -1px;
+  right: -5px;
+  color: var(--coral);
+}
+
+.logoStar svg {
+  width: 27px;
+  height: 27px;
+  stroke-width: 3;
+}
+
+.wordmarkCaption {
+  display: block;
+  position: absolute;
+  bottom: 0;
+  left: 1px;
+  white-space: nowrap;
+  font-size: 8px;
+  font-weight: 500;
+  letter-spacing: 0.135em;
+}
+
+.search {
+  display: flex;
+  align-items: center;
+  flex: 1;
+  max-width: 570px;
+  height: 46px;
+  margin-inline: auto;
+  padding: 0 8px 0 16px;
+  gap: 12px;
+  border: 1px solid var(--hairline);
+  border-radius: 6px;
+  background: #f4f2ec;
+}
+
+.search > svg {
+  flex-shrink: 0;
+  color: #77796e;
+}
+
+.search input {
+  width: 100%;
+  min-width: 0;
+  border: 0;
+  background: transparent;
+  font-size: 12px;
+  color: var(--ink);
+  outline: none;
+}
+
+.search input::placeholder {
+  color: #787a71;
+}
+
+.search button {
+  display: grid;
+  place-items: center;
+  width: 36px;
+  height: 36px;
+  flex-shrink: 0;
+  color: var(--coral);
+}
+
+.headerActions {
+  display: flex;
+  align-items: center;
+  gap: 13px;
+}
+
+.headerActions > [data-slot="button"] {
+  min-width: 44px;
+  min-height: 44px;
+}
+
+.mobileMenu {
+  display: none;
+}
+
+.navigation {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  min-height: 49px;
+  font-size: 12px;
+  font-weight: 500;
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+
+.navigation::-webkit-scrollbar {
+  display: none;
+}
+
+.navigation a {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  min-height: 44px;
+  white-space: nowrap;
+  color: var(--ink);
+  transition: color 0.2s;
+}
+
+.navigation a:hover {
+  color: var(--coral);
+}
+
+.navigation .newLink {
+  color: var(--coral);
+}
+
+.navSpacer {
+  margin-left: auto;
+}
+
+/* ---------- Mobil menu paneli ---------- */
+.mobileNav {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  margin-top: 18px;
+}
+
+.mobileNav a {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-height: 48px;
+  padding-block: 6px;
+  border-bottom: 1px solid var(--hairline);
+  font-size: 13px;
+  color: var(--ink);
+}
+
+.mobileNavCount {
+  margin-left: auto;
+  font-size: 10px;
+  color: var(--ink-soft);
+}
+
+.mobileNav .mobileNavAll {
+  font-weight: 650;
+  color: var(--coral);
+}
+
+/* ---------- Alt bilgi ---------- */
+.footer {
+  background: var(--deep-green);
+  color: #f6f3e7;
+}
+
+.footerTop {
+  display: grid;
+  grid-template-columns: 1.4fr 1fr 1fr 1.2fr;
+  gap: 45px;
+  padding-block: 61px 53px;
+}
+
+.footerWordmark {
+  font-size: 51px;
+  color: #f6f3e7;
+}
+
+.footerWordmark .logoStar {
+  color: #efb17d;
+}
+
+.footerBrand > p {
+  margin-top: 24px;
+  color: #bbc5b4;
+  font-size: 12px;
+  line-height: 1.85;
+}
+
+.footerTop h2 {
+  font-size: 11px;
+  font-weight: 550;
+  margin-bottom: 16px;
+  letter-spacing: 0.02em;
+}
+
+.footerLink {
+  display: block;
+  min-height: 32px;
+  color: #bbc5b4;
+  font-size: 11px;
+  line-height: 1.6;
+}
+
+.footerLink:hover {
+  color: #fff;
+}
+
+.footerMessage {
+  border-left: 1px solid #ffffff20;
+  padding-left: 40px;
+}
+
+.footerMessage > svg {
+  color: #ddb07d;
+  margin-bottom: 13px;
+  stroke-width: 1.5;
+}
+
+.footerMessage > p {
+  font-size: 23px;
+  line-height: 1.25;
+  letter-spacing: -0.04em;
+}
+
+.footerMessage em {
+  font-family: Georgia, "Times New Roman", serif;
+  font-weight: 400;
+  color: #d9c99b;
+}
+
+.footerMessage > a {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  margin-top: 6px;
+  color: #bbc5b4;
+  font-size: 11px;
+}
+
+.footerBottom {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  min-height: 60px;
+  border-top: 1px solid #ffffff20;
+  color: #c0c8b8;
+  font-size: 9px;
+}
+
+.footerNote {
+  max-width: 520px;
+}
+
+/* ---------- Sayfa basligi ---------- */
+.pageHead {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 22px;
+  flex-wrap: wrap;
+  padding-bottom: 22px;
+  border-bottom: 1px solid var(--hairline);
+}
+
+.pageTitle {
+  margin-top: 10px;
+  font-size: clamp(27px, 3vw, 40px);
+  line-height: 1.12;
+  font-weight: 550;
+  letter-spacing: -0.055em;
+}
+
+.pageTitle em {
+  font-family: Georgia, "Times New Roman", serif;
+  font-style: italic;
+  font-weight: 400;
+  color: var(--coral);
+}
+
+.pageMeta {
+  font-size: 11px;
+  color: var(--ink-soft);
+}
+
+.breadcrumb {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+  padding-block: 4px 18px;
+  font-size: 11px;
+  color: var(--ink-soft);
+}
+
+.breadcrumb a:hover {
+  color: var(--coral);
+}
+
+.breadcrumb svg {
+  width: 12px;
+  height: 12px;
+  opacity: 0.6;
+  flex-shrink: 0;
+}
+
+.breadcrumbCurrent {
+  color: var(--ink);
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.textLink {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  min-height: 44px;
+  font-size: 12px;
+  font-weight: 550;
+  text-decoration: underline;
+  text-underline-offset: 6px;
+  text-decoration-color: #aaa99d;
+}
+
+.textLink:hover {
+  color: var(--coral);
+}
+
+/* ---------- Etiketler / cipler ---------- */
+.chipRow {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 38px;
+  padding: 8px 14px;
+  border: 1px solid var(--hairline);
+  border-radius: 4px;
+  background: transparent;
+  font-size: 11px;
+  color: var(--ink);
+  transition: background 0.18s, color 0.18s, border-color 0.18s;
+}
+
+.chip:hover {
+  background: #f0ede4;
+}
+
+.chipActive {
+  background: var(--deep-green);
+  border-color: var(--deep-green);
+  color: #fff;
+}
+
+.chipActive:hover {
+  background: var(--deep-green);
+  color: #fff;
+}
+
+.chipCount {
+  font-size: 10px;
+  opacity: 0.7;
+}
+
+.chipRemove {
+  background: #fff;
+  border-color: #d8d3c5;
+}
+
+.chipRemove svg {
+  width: 13px;
+  height: 13px;
+  color: var(--coral);
+}
+
+.chipsLabel {
+  align-self: center;
+  font-size: 10px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--ink-soft);
+}
+
+/* ---------- Urun karti ---------- */
+.productGrid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 26px 22px;
+}
+
+.productGridNarrow {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.productCard {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  color: var(--ink);
+}
+
+.productImage {
+  position: relative;
+  aspect-ratio: 1 / 1.1;
+  overflow: hidden;
+  border-radius: 5px;
+  border: 1px solid var(--hairline);
+  background: #fff;
+}
+
+.productImage img {
+  transition: transform 0.5s ease;
+}
+
+.productCard:hover .productImage img {
+  transform: scale(1.045);
+}
+
+.productBadge {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  max-width: calc(100% - 20px);
+  pointer-events: none;
+  padding: 5px 9px;
+  background: #fcfaf5e8;
+  border: 1px solid var(--hairline);
+  border-radius: 2px;
+  font-size: 9px;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: #3f5c49;
+}
+
+.productBadgeOut {
+  color: #8a5347;
+}
+
+.productInfo {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  padding: 15px 1px 0;
+}
+
+.productBrand {
+  display: block;
+  font-size: 8px;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: #7a7b71;
+  min-height: 12px;
+}
+
+.productName {
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  margin-top: 7px;
+  font-size: 13px;
+  font-weight: 500;
+  line-height: 1.5;
+}
+
+.productCard:hover .productName {
+  color: var(--coral);
+}
+
+.productBottom {
+  display: flex;
+  align-items: baseline;
+  gap: 9px;
+  flex-wrap: wrap;
+  margin-top: auto;
+  padding-top: 12px;
+}
+
+.price {
+  font-size: 15px;
+  font-weight: 650;
+  letter-spacing: -0.025em;
+}
+
+.listPrice {
+  font-size: 11px;
+  color: var(--ink-soft);
+  text-decoration: line-through;
+}
+
+/* ---------- Bos durum ---------- */
+.emptyState {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 14px;
+  padding: 64px 24px;
+  border: 1px dashed #d8d3c5;
+  border-radius: 6px;
+  text-align: center;
+  background: #faf7f0;
+}
+
+.emptyState h2 {
+  font-size: 19px;
+  font-weight: 550;
+  letter-spacing: -0.04em;
+}
+
+.emptyState p {
+  font-size: 12px;
+  color: var(--ink-soft);
+  line-height: 1.7;
+}
+
+.emptyState svg {
+  width: 34px;
+  height: 34px;
+  color: var(--coral);
+  stroke-width: 1.3;
+}
+
+/* ---------- Sayfalama ---------- */
+.pagination {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  margin-top: 42px;
+}
+
+.pageLink {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  min-width: 44px;
+  min-height: 44px;
+  padding-inline: 10px;
+  border: 1px solid var(--hairline);
+  border-radius: 4px;
+  background: #fff;
+  font-size: 12px;
+  color: var(--ink);
+  transition: background 0.18s;
+}
+
+.pageLink:hover {
+  background: #f0ede4;
+}
+
+.pageLinkActive {
+  background: var(--deep-green);
+  border-color: var(--deep-green);
+  color: #fff;
+}
+
+.pageLinkActive:hover {
+  background: var(--deep-green);
+}
+
+.pageLinkDisabled {
+  opacity: 0.4;
+  pointer-events: none;
+}
+
+.pageEllipsis {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 26px;
+  min-height: 44px;
+  color: var(--ink-soft);
+  font-size: 12px;
+}
+
+/* ---------- Katalog duzeni ---------- */
+.catalogLayout {
+  display: grid;
+  grid-template-columns: 236px minmax(0, 1fr);
+  gap: 44px;
+  align-items: start;
+  margin-top: 26px;
+}
+
+.sidebar {
+  position: sticky;
+  top: 160px;
+  max-height: calc(100dvh - 190px);
+  overflow-y: auto;
+  padding-right: 4px;
+}
+
+.sidebarHidden {
+  display: block;
+}
+
+.filterGroup {
+  padding-block: 18px;
+  border-bottom: 1px solid var(--hairline);
+}
+
+.filterGroup:first-child {
+  padding-top: 0;
+}
+
+.filterGroup:last-child {
+  border-bottom: 0;
+}
+
+.filterTitle {
+  margin-bottom: 10px;
+  font-size: 9px;
+  font-weight: 600;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: #7b7e70;
+}
+
+.filterList {
+  display: flex;
+  flex-direction: column;
+}
+
+.filterLink {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-height: 40px;
+  padding: 6px 8px 6px 0;
+  font-size: 12px;
+  line-height: 1.4;
+  color: var(--ink);
+  border-radius: 3px;
+}
+
+.filterLink:hover {
+  color: var(--coral);
+}
+
+.filterLinkActive {
+  font-weight: 650;
+  color: var(--coral);
+}
+
+.filterCount {
+  margin-left: auto;
+  font-size: 10px;
+  color: var(--ink-soft);
+  flex-shrink: 0;
+}
+
+.filterChildren {
+  margin-left: 12px;
+  padding-left: 12px;
+  border-left: 1px solid var(--hairline);
+}
+
+.filterChildren .filterLink {
+  min-height: 36px;
+  font-size: 11px;
+  color: var(--ink-soft);
+}
+
+.toggleRow {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-height: 44px;
+  font-size: 12px;
+  color: var(--ink);
+}
+
+.toggleTrack {
+  position: relative;
+  width: 34px;
+  height: 19px;
+  flex-shrink: 0;
+  border-radius: 999px;
+  background: #ddd9cd;
+  transition: background 0.2s;
+}
+
+.toggleTrack::after {
+  content: "";
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  width: 15px;
+  height: 15px;
+  border-radius: 50%;
+  background: #fff;
+  transition: transform 0.2s;
+}
+
+.toggleOn .toggleTrack {
+  background: var(--coral);
+}
+
+.toggleOn .toggleTrack::after {
+  transform: translateX(15px);
+}
+
+.toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  flex-wrap: wrap;
+  margin-bottom: 18px;
+}
+
+.toolbarRight {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-left: auto;
+}
+
+.selectField {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  height: 40px;
+  padding: 0 10px 0 12px;
+  border: 1px solid var(--hairline);
+  border-radius: 4px;
+  background: #fff;
+  font-size: 11px;
+  color: var(--ink-soft);
+}
+
+.selectField select {
+  height: 38px;
+  min-width: 0;
+  border: 0;
+  background: transparent;
+  font-size: 11px;
+  font-weight: 550;
+  color: var(--ink);
+  outline: none;
+}
+
+.filterButton {
+  display: none;
+  align-items: center;
+  gap: 9px;
+  min-height: 44px;
+  padding: 0 16px;
+  border: 1px solid var(--hairline);
+  border-radius: 4px;
+  background: #fff;
+  font-size: 12px;
+  color: var(--ink);
+}
+
+.sheetPanel {
+  background: var(--paper);
+  padding: 22px 20px 32px;
+  overflow-y: auto;
+}
+
+/* ---------- Urun detay ---------- */
+.productLayout {
+  display: grid;
+  grid-template-columns: minmax(0, 1.05fr) minmax(0, 1fr);
+  gap: 56px;
+  align-items: start;
+}
+
+.gallery {
+  position: sticky;
+  top: 160px;
+}
+
+.mainImage {
+  position: relative;
+  aspect-ratio: 1;
+  overflow: hidden;
+  border: 1px solid var(--hairline);
+  border-radius: 6px;
+  background: #fff;
+}
+
+.thumbs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 12px;
+}
+
+.thumb {
+  position: relative;
+  width: 72px;
+  height: 72px;
+  overflow: hidden;
+  border: 1px solid var(--hairline);
+  border-radius: 4px;
+  background: #fff;
+  transition: border-color 0.2s;
+}
+
+.thumb:hover {
+  border-color: #c9c4b5;
+}
+
+.thumbActive {
+  border-color: var(--coral);
+  box-shadow: 0 0 0 1px var(--coral);
+}
+
+.buyColumn {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.productH1 {
+  font-size: clamp(23px, 2.4vw, 31px);
+  line-height: 1.2;
+  font-weight: 550;
+  letter-spacing: -0.045em;
+}
+
+.codeLine {
+  font-size: 11px;
+  color: var(--ink-soft);
+  letter-spacing: 0.02em;
+}
+
+.priceRow {
+  display: flex;
+  align-items: baseline;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.bigPrice {
+  font-size: 33px;
+  font-weight: 650;
+  letter-spacing: -0.04em;
+}
+
+.bigListPrice {
+  font-size: 15px;
+  color: var(--ink-soft);
+  text-decoration: line-through;
+}
+
+.vatNote {
+  margin-top: -12px;
+  font-size: 10px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--ink-soft);
+}
+
+.stockBadge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  width: fit-content;
+  padding: 7px 12px;
+  border-radius: 3px;
+  background: #e6ece3;
+  color: #33553f;
+  font-size: 11px;
+  font-weight: 550;
+}
+
+.stockBadgeOut {
+  background: #f2e6e2;
+  color: #8a4030;
+}
+
+.stockBadge svg {
+  width: 14px;
+  height: 14px;
+}
+
+.infoBox {
+  display: flex;
+  align-items: flex-start;
+  gap: 11px;
+  padding: 14px 16px;
+  border: 1px solid var(--hairline);
+  border-radius: 5px;
+  background: #f7f4ec;
+  font-size: 11px;
+  line-height: 1.7;
+  color: var(--ink-soft);
+}
+
+.infoBox svg {
+  width: 16px;
+  height: 16px;
+  flex-shrink: 0;
+  color: var(--coral);
+  margin-top: 1px;
+}
+
+.blockTitle {
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: #7b7e70;
+  margin-bottom: 10px;
+}
+
+.description {
+  white-space: pre-line;
+  font-size: 12px;
+  line-height: 1.9;
+  color: #5b5e55;
+}
+
+.specs {
+  display: grid;
+  gap: 0;
+  font-size: 12px;
+}
+
+.specs > div {
+  display: flex;
+  gap: 16px;
+  padding-block: 10px;
+  border-bottom: 1px solid var(--hairline);
+}
+
+.specs dt {
+  width: 110px;
+  flex-shrink: 0;
+  color: var(--ink-soft);
+}
+
+.specs dd {
+  min-width: 0;
+  word-break: break-word;
+}
+
+.divider {
+  height: 1px;
+  background: var(--hairline);
+}
+
+.similar {
+  margin-top: 72px;
+  padding-top: 40px;
+  border-top: 1px solid var(--hairline);
+}
+
+.stickyBar {
+  display: none;
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 30;
+  align-items: center;
+  gap: 14px;
+  padding: 10px 16px calc(10px + env(safe-area-inset-bottom));
+  background: #fcfaf5f2;
+  border-top: 1px solid var(--hairline);
+  backdrop-filter: blur(6px);
+}
+
+.stickyPrice {
+  display: flex;
+  flex-direction: column;
+  flex-shrink: 0;
+}
+
+.stickyPrice strong {
+  font-size: 17px;
+  font-weight: 650;
+  letter-spacing: -0.03em;
+}
+
+.stickyPrice span {
+  font-size: 9px;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--ink-soft);
+}
+
+/* ---------- Icerik panelleri (sepet, hesap, form sayfalari) ---------- */
+.panel {
+  padding: 22px;
+  border: 1px solid var(--hairline);
+  border-radius: 6px;
+  background: #fff;
+}
+
+.narrow {
+  width: min(430px, 100%);
+  margin-inline: auto;
+}
+
+/* ---------- Duyarli ---------- */
+@media (max-width: 1150px) {
+  .container {
+    width: calc(100% - 56px);
+  }
+  .headerMain {
+    gap: 25px;
+  }
+  .headerActions {
+    gap: 3px;
+  }
+  .navigation {
+    gap: 14px;
+    font-size: 11px;
+  }
+  .catalogLayout {
+    grid-template-columns: 200px minmax(0, 1fr);
+    gap: 30px;
+  }
+  .productGrid {
+    gap: 22px 16px;
+  }
+  .productGridNarrow {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+  .footerTop {
+    gap: 28px;
+  }
+  .footerMessage {
+    padding-left: 25px;
+  }
+  .productLayout {
+    gap: 34px;
+  }
+}
+
+@media (max-width: 950px) {
+  .catalogLayout {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 0;
+  }
+  .sidebarHidden {
+    display: none;
+  }
+  .filterButton {
+    display: inline-flex;
+  }
+  .productGridNarrow {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 850px) {
+  .headerMain {
+    min-height: 84px;
+    gap: 18px;
+  }
+  .wordmark {
+    font-size: 36px;
+  }
+  .wordmarkCaption {
+    font-size: 7px;
+  }
+  .logoStar svg {
+    width: 24px;
+    height: 24px;
+  }
+  .navigation {
+    gap: 24px;
+  }
+  .productGrid,
+  .productGridNarrow {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 28px 18px;
+  }
+  .productLayout {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 30px;
+  }
+  .gallery {
+    position: static;
+  }
+  .similar {
+    margin-top: 48px;
+  }
+  .stickyBar {
+    display: flex;
+  }
+  .page.hasStickyBar {
+    padding-bottom: 96px;
+  }
+  .footerTop {
+    grid-template-columns: 1.3fr 1fr 1fr;
+  }
+  .footerMessage {
+    display: none;
+  }
+  .footerBottom > span:last-child {
+    display: none;
+  }
+}
+
+@media (max-width: 700px) {
+  .container {
+    width: calc(100% - 36px);
+  }
+  .page {
+    padding-block: 20px 56px;
+  }
+  .announcement {
+    font-size: 9px;
+    gap: 12px;
+  }
+  .announcement > span {
+    display: none;
+  }
+  .headerMain {
+    flex-wrap: wrap;
+    gap: 0;
+    padding-top: 14px;
+    padding-bottom: 12px;
+  }
+  .mobileMenu {
+    display: flex;
+    width: 36px;
+    min-height: 44px;
+    margin-right: 8px;
+    padding: 0;
+  }
+  .header .wordmark {
+    margin-right: auto;
+  }
+  .headerActions {
+    gap: 0;
+  }
+  .headerActions > [data-slot="button"] {
+    padding-inline: 6px;
+  }
+  .headerActions > [data-slot="button"] > span {
+    display: none;
+  }
+  .search {
+    order: 4;
+    flex-basis: 100%;
+    max-width: none;
+    margin-top: 15px;
+    height: 43px;
+  }
+  .navigation {
+    min-height: 42px;
+    gap: 22px;
+  }
+  .navigation a {
+    min-height: 42px;
+    font-size: 10px;
+  }
+  .navSpacer {
+    margin-left: 0;
+  }
+  .pageHead {
+    align-items: flex-start;
+  }
+  .pageTitle {
+    font-size: 28px;
+  }
+  .productGrid,
+  .productGridNarrow {
+    gap: 24px 12px;
+  }
+  .productImage {
+    aspect-ratio: 1 / 1.05;
+  }
+  .productName {
+    font-size: 12px;
+    line-height: 1.45;
+  }
+  .bigPrice {
+    font-size: 28px;
+  }
+  .thumb {
+    width: 60px;
+    height: 60px;
+  }
+  .specs dt {
+    width: 92px;
+  }
+  .footerTop {
+    grid-template-columns: 1fr 1fr;
+    gap: 32px 22px;
+    padding-block: 38px;
+  }
+  .footerBrand {
+    grid-column: 1 / -1;
+    display: flex;
+    align-items: center;
+    gap: 30px;
+  }
+  .footerWordmark {
+    font-size: 42px;
+  }
+  .footerBrand > p {
+    margin: 0;
+    font-size: 11px;
+  }
+  .footerLink {
+    min-height: 40px;
+  }
+  .footerBottom {
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: center;
+    gap: 9px;
+    padding-block: 20px;
+  }
+}
+
+@media (max-width: 420px) {
+  .header .wordmark {
+    font-size: 31px;
+  }
+  .logoStar svg {
+    width: 21px;
+    height: 21px;
+  }
+  .productLayout,
+  .catalogLayout {
+    gap: 24px;
+  }
+  .footerBrand {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 20px;
+  }
+  .toolbar {
+    gap: 10px;
+  }
+  .toolbarRight {
+    width: 100%;
+    margin-left: 0;
+  }
+  .selectField {
+    flex: 1;
+  }
+  .selectField select {
+    width: 100%;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .productImage img,
+  .toggleTrack,
+  .toggleTrack::after {
+    transition: none !important;
+  }
+}

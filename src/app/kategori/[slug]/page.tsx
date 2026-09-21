@@ -1,26 +1,33 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import { Suspense } from "react";
 
+import { Breadcrumbs } from "@/components/site/breadcrumbs";
+import { CATEGORY_SORT_OPTIONS, QuerySelect } from "@/components/site/query-select";
 import { Pagination } from "@/components/site/pagination";
 import { ProductGrid } from "@/components/site/product-grid";
-import { Badge } from "@/components/ui/badge";
-import { getCategoryPage } from "@/lib/api";
-import { cn } from "@/lib/utils";
+import { getCategoryPage, getCategoryTree } from "@/lib/api";
+import { resolveAncestors } from "@/lib/categories";
+import { decodeHtml } from "@/lib/decode-html";
+import { buildHref } from "@/lib/query";
+
+import styles from "@/components/site/storefront.module.css";
 
 type SearchParams = Promise<Record<string, string | undefined>>;
 
-const SORT_OPTIONS = [
-  { value: "newest", label: "Yeni" },
-  { value: "price_asc", label: "Fiyat ↑" },
-  { value: "price_desc", label: "Fiyat ↓" },
-  { value: "name", label: "A-Z" },
-];
+const BRAND_CHIP_LIMIT = 12;
+const SORT_VALUES = CATEGORY_SORT_OPTIONS.map((option) => option.value) as readonly string[];
 
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
   const { slug } = await params;
   const data = await getCategoryPage(slug, {});
-  return { title: data?.category.name ?? "Kategori" };
+  if (!data) return { title: "Kategori bulunamadı" };
+  const name = decodeHtml(data.category.name);
+  return {
+    title: name,
+    description: `${name} kategorisindeki ${data.products.meta.total.toLocaleString("tr-TR")} ürünü Mazen Kırtasiye'de keşfet.`,
+  };
 }
 
 export default async function CategoryPage({ params, searchParams }: {
@@ -29,85 +36,135 @@ export default async function CategoryPage({ params, searchParams }: {
 }) {
   const { slug } = await params;
   const sp = await searchParams;
-  const query = { brand: sp.brand, sort: sp.sort, page: sp.page, in_stock: sp.in_stock };
+  const page = Math.min(100000, Math.max(1, Number.parseInt(sp.page ?? "1", 10) || 1));
+  const query = {
+    brand: sp.brand?.slice(0, 200) || undefined,
+    sort: SORT_VALUES.includes(sp.sort ?? "") ? sp.sort : undefined,
+    in_stock: sp.in_stock === "1" ? "1" : undefined,
+    page: page > 1 ? String(page) : undefined,
+  };
 
-  const data = await getCategoryPage(slug, query);
+  const [data, tree] = await Promise.all([getCategoryPage(slug, query), getCategoryTree()]);
   if (!data) notFound();
 
   const basePath = `/kategori/${slug}`;
-  const link = (overrides: Record<string, string | undefined>) => {
-    const p = new URLSearchParams();
-    for (const [k, v] of Object.entries({ ...query, page: undefined, ...overrides })) {
-      if (v) p.set(k, v);
-    }
-    const qs = p.toString();
-    return qs ? `${basePath}?${qs}` : basePath;
-  };
+  const name = decodeHtml(data.category.name);
+  const trail = resolveAncestors(data.category, tree);
+  const children = data.children.filter((child) => (child.product_count ?? 0) > 0);
+  const meta = data.products.meta;
+  const activeBrand = data.brands.find((brand) => brand.slug === query.brand);
 
   return (
-    <div className="space-y-6">
-      <div>
-        <h1 className="text-2xl font-bold">{data.category.name}</h1>
-        <p className="text-sm text-muted-foreground">{data.products.meta.total} ürün</p>
+    <div className={`${styles.container} ${styles.page}`}>
+      <Breadcrumbs trail={trail} current={name} />
+
+      <div className={styles.pageHead}>
+        <div>
+          <span className={styles.eyebrow}>
+            <span /> Kategori
+          </span>
+          <h1 className={styles.pageTitle}>{name}</h1>
+        </div>
+        <p className={styles.pageMeta}>
+          {meta.total.toLocaleString("tr-TR")} ürün
+          {meta.from && meta.to ? ` · ${meta.from}–${meta.to} arası gösteriliyor` : ""}
+        </p>
       </div>
 
-      {data.children.length > 0 && (
-        <div className="flex flex-wrap gap-2">
-          {data.children
-            .filter((c) => (c.product_count ?? 0) > 0)
-            .map((child) => (
-              <Link key={child.id} href={`/kategori/${child.slug}`}>
-                <Badge variant="outline" className="px-3 py-1 text-sm hover:bg-accent">
-                  {child.name} <span className="ml-1 text-muted-foreground">{child.product_count}</span>
-                </Badge>
-              </Link>
-            ))}
+      {children.length > 0 && (
+        <div className={`${styles.chipRow} mt-6`}>
+          <span className={styles.chipsLabel}>Alt kategoriler</span>
+          {children.map((child) => (
+            <Link key={child.id} href={`/kategori/${child.slug}`} className={styles.chip}>
+              {decodeHtml(child.name)}
+              <span className={styles.chipCount}>{(child.product_count ?? 0).toLocaleString("tr-TR")}</span>
+            </Link>
+          ))}
         </div>
       )}
 
-      <div className="flex flex-col gap-3 rounded-lg border p-3 md:flex-row md:items-center md:justify-between">
-        <div className="flex flex-wrap items-center gap-2 text-sm">
-          <span className="text-muted-foreground">Sırala:</span>
-          {SORT_OPTIONS.map((option) => (
-            <Link
-              key={option.value}
-              href={link({ sort: option.value === "newest" ? undefined : option.value })}
-              className={cn(
-                "rounded-md px-2 py-1 hover:bg-accent",
-                (query.sort ?? "newest") === option.value && "bg-accent font-medium"
-              )}
-            >
-              {option.label}
-            </Link>
-          ))}
+      <div className={`${styles.toolbar} mt-7`}>
+        <div className={styles.chipRow}>
           <Link
-            href={link({ in_stock: query.in_stock ? undefined : "1" })}
-            className={cn("rounded-md px-2 py-1 hover:bg-accent", query.in_stock && "bg-accent font-medium")}
+            href={buildHref(basePath, query, { in_stock: query.in_stock ? undefined : "1" })}
+            className={`${styles.chip} ${query.in_stock ? styles.chipActive : ""}`}
           >
             Sadece stoktakiler
           </Link>
-        </div>
-        {data.brands.length > 1 && (
-          <div className="flex flex-wrap items-center gap-1 text-sm">
-            <span className="mr-1 text-muted-foreground">Marka:</span>
-            <Link href={link({ brand: undefined })} className={cn("rounded-md px-2 py-1 hover:bg-accent", !query.brand && "bg-accent")}>
-              Tümü
+          {(query.brand || query.sort) && (
+            <Link href={basePath} className={`${styles.chip} ${styles.chipRemove}`}>
+              Filtreleri temizle
             </Link>
-            {data.brands.map((brand) => (
-              <Link
-                key={brand.id}
-                href={link({ brand: brand.slug })}
-                className={cn("rounded-md px-2 py-1 hover:bg-accent", query.brand === brand.slug && "bg-accent font-medium")}
-              >
-                {brand.name} <span className="text-muted-foreground">({brand.product_count})</span>
-              </Link>
-            ))}
-          </div>
-        )}
+          )}
+        </div>
+        <div className={styles.toolbarRight}>
+          {data.brands.length > BRAND_CHIP_LIMIT && (
+            <Suspense fallback={<span className={styles.selectField}>Marka</span>}>
+              <QuerySelect
+                basePath={basePath}
+                name="brand"
+                label="Marka"
+                icon="tag"
+                value={query.brand ?? ""}
+                defaultValue=""
+                options={[
+                  { value: "", label: "Tüm markalar" },
+                  ...data.brands.map((brand) => ({
+                    value: brand.slug,
+                    label: `${decodeHtml(brand.name)} (${brand.product_count ?? 0})`,
+                  })),
+                ]}
+              />
+            </Suspense>
+          )}
+          <Suspense fallback={<span className={styles.selectField}>Sırala</span>}>
+            <QuerySelect
+              basePath={basePath}
+              name="sort"
+              label="Sırala"
+              value={query.sort ?? "newest"}
+              defaultValue="newest"
+              options={CATEGORY_SORT_OPTIONS}
+            />
+          </Suspense>
+        </div>
       </div>
 
-      <ProductGrid products={data.products.data} />
-      <Pagination meta={data.products.meta} basePath={basePath} query={query} />
+      {data.brands.length > 1 && data.brands.length <= BRAND_CHIP_LIMIT && (
+        <div className={`${styles.chipRow} mt-4`}>
+          <span className={styles.chipsLabel}>Marka</span>
+          <Link
+            href={buildHref(basePath, query, { brand: undefined })}
+            className={`${styles.chip} ${!query.brand ? styles.chipActive : ""}`}
+          >
+            Tümü
+          </Link>
+          {data.brands.map((brand) => (
+            <Link
+              key={brand.id}
+              href={buildHref(basePath, query, { brand: brand.slug })}
+              className={`${styles.chip} ${query.brand === brand.slug ? styles.chipActive : ""}`}
+            >
+              {decodeHtml(brand.name)}
+              <span className={styles.chipCount}>{brand.product_count ?? 0}</span>
+            </Link>
+          ))}
+        </div>
+      )}
+
+      <div className="mt-8">
+        <ProductGrid
+          products={data.products.data}
+          preloadCount={4}
+          emptyTitle="Bu kategoride şimdilik ürün yok."
+          emptyText={
+            activeBrand
+              ? `${decodeHtml(activeBrand.name)} markası için sonuç bulunamadı. Marka filtresini kaldırmayı deneyebilirsin.`
+              : "Filtreleri kaldırmayı veya üst kategoriye göz atmayı öneririz."
+          }
+        />
+        <Pagination meta={meta} basePath={basePath} query={query} />
+      </div>
     </div>
   );
 }

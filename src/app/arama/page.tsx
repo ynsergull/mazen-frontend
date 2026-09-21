@@ -1,32 +1,17 @@
-import type { Metadata } from "next";
+import { redirect } from "next/navigation";
 
-import { Pagination } from "@/components/site/pagination";
-import { ProductGrid } from "@/components/site/product-grid";
-import { searchProducts } from "@/lib/api";
-
-export const metadata: Metadata = { title: "Arama" };
-
+/**
+ * Arama artik katalog sayfasinda yapiliyor; eski /arama baglantilari korunsun diye
+ * sorgu /urunler adresine tasiniyor.
+ */
 export default async function SearchPage({ searchParams }: {
   searchParams: Promise<{ q?: string; page?: string }>;
 }) {
   const { q = "", page } = await searchParams;
-  const term = q.trim();
-
-  if (term.length < 2) {
-    return <p className="text-muted-foreground">Aramak için en az 2 karakter girin.</p>;
-  }
-
-  const data = await searchProducts(term, page ? Number(page) : undefined);
-  const products = data?.products;
-
-  return (
-    <div className="space-y-6">
-      <div>
-        <h1 className="text-2xl font-bold">&ldquo;{term}&rdquo; için sonuçlar</h1>
-        <p className="text-sm text-muted-foreground">{products?.meta.total ?? 0} ürün bulundu</p>
-      </div>
-      <ProductGrid products={products?.data ?? []} emptyText="Aramanızla eşleşen ürün bulunamadı. Farklı bir kelime deneyin." />
-      {products && <Pagination meta={products.meta} basePath="/arama" query={{ q: term }} />}
-    </div>
-  );
+  const params = new URLSearchParams();
+  const term = q.trim().slice(0, 120);
+  if (term) params.set("q", term);
+  if (page && page !== "1") params.set("page", page);
+  const qs = params.toString();
+  redirect(qs ? `/urunler?${qs}` : "/urunler");
 }

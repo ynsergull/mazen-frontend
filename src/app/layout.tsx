@@ -4,9 +4,9 @@ import { Suspense } from "react";
 
 import { AuthProvider } from "@/components/auth/auth-provider";
 import { CartProvider } from "@/components/cart/cart-provider";
-import { SiteFooter } from "@/components/site/footer";
-import { SiteHeader } from "@/components/site/header";
 import { SiteFrame } from "@/components/site/site-frame";
+import { StorefrontFooter } from "@/components/site/storefront-footer";
+import { StorefrontHeader, StorefrontHeaderFallback } from "@/components/site/storefront-header";
 
 import "./globals.css";
 
@@ -20,12 +20,16 @@ export const metadata: Metadata = {
 export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
     <html lang="tr" className={`${inter.variable} h-full antialiased`}>
-      <body className="flex min-h-full flex-col bg-background text-foreground">
+      <body className="flex min-h-full flex-col overflow-x-clip bg-background text-foreground">
         <AuthProvider>
           <CartProvider>
             <SiteFrame
-              header={<Suspense fallback={<div className="h-14 border-b" />}><SiteHeader /></Suspense>}
-              footer={<SiteFooter />}
+              header={
+                <Suspense fallback={<StorefrontHeaderFallback />}>
+                  <StorefrontHeader />
+                </Suspense>
+              }
+              footer={<StorefrontFooter />}
             >
               {children}
             </SiteFrame>
