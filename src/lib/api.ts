@@ -1,4 +1,5 @@
 import "server-only";
+import { resolveApiUrl } from "@/lib/api-url";
 
 import type {
   Category,
@@ -10,8 +11,7 @@ import type {
   ProductSummary,
 } from "@/types/api";
 
-const API_URL =
-  process.env.API_URL ?? process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:8000/api/v1";
+const API_URL = resolveApiUrl(process.env.API_URL, process.env.NEXT_PUBLIC_API_URL);
 
 export const CACHE_TAGS = {
   products: "products",
