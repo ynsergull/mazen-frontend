@@ -4,7 +4,8 @@ import { notFound } from "next/navigation";
 import { Suspense } from "react";
 
 import { Breadcrumbs } from "@/components/site/breadcrumbs";
-import { CATEGORY_SORT_OPTIONS, QuerySelect } from "@/components/site/query-select";
+import { QuerySelect } from "@/components/site/query-select";
+import { CATEGORY_SORT_OPTIONS } from "@/components/site/query-options";
 import { Pagination } from "@/components/site/pagination";
 import { ProductGrid } from "@/components/site/product-grid";
 import { getCategoryPage, getCategoryTree } from "@/lib/api";
