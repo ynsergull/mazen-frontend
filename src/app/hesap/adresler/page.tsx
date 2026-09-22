@@ -1,10 +1,17 @@
 import { AddressBook } from "@/components/account/address-book";
+import { PageHeading } from "@/components/site/page-heading";
 
 export default function AddressesPage() {
   return (
-    <div className="space-y-6">
-      <h1 className="text-2xl font-bold">Adreslerim</h1>
-      <AddressBook />
+    <div>
+      <PageHeading
+        eyebrow="Senin Mazen’in"
+        title="Adreslerim"
+        meta="Teslimat ve fatura adreslerini burada tutarsın."
+      />
+      <div className="mt-8">
+        <AddressBook />
+      </div>
     </div>
   );
 }

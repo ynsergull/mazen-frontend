@@ -1,14 +1,19 @@
 import type { Metadata } from "next";
 
 import { CartView } from "@/components/cart/cart-view";
+import { PageHeading } from "@/components/site/page-heading";
+
+import styles from "@/components/site/storefront.module.css";
 
 export const metadata: Metadata = { title: "Sepetim" };
 
 export default function CartPage() {
   return (
-    <div className="space-y-6">
-      <h1 className="text-2xl font-bold">Sepetim</h1>
-      <CartView />
+    <div className={`${styles.container} ${styles.page}`}>
+      <PageHeading eyebrow="Alışverişin" title="Sepetim" meta="Tüm fiyatlara KDV dahildir." />
+      <div className="mt-8">
+        <CartView />
+      </div>
     </div>
   );
 }

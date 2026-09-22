@@ -3,7 +3,7 @@ import { ArrowRight, Asterisk, Search, Sparkles } from "lucide-react";
 
 import { UserMenu } from "@/components/auth/user-menu";
 import { CartBadge } from "@/components/cart/cart-badge";
-import { getCategoryTree } from "@/lib/api";
+import { getCategoryTreeSafe } from "@/lib/api";
 import { decodeHtml } from "@/lib/decode-html";
 
 import { StorefrontMobileNav, type MobileNavCategory } from "./storefront-mobile-nav";
@@ -14,7 +14,7 @@ const NAV_LIMIT = 8;
 
 /** Tum sayfalarda kullanilan ust bar: duyuru seridi, logo, arama, hesap/sepet ve kategori menusu. */
 export async function StorefrontHeader() {
-  const tree = await getCategoryTree();
+  const tree = await getCategoryTreeSafe();
   const roots: MobileNavCategory[] = tree
     .filter((category) => (category.product_count ?? 0) > 0)
     .map((category) => ({

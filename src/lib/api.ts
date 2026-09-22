@@ -66,6 +66,19 @@ export async function getCategoryTree(): Promise<Category[]> {
   return data?.data ?? [];
 }
 
+/**
+ * Ust bar ve alt bilgi her sayfada kategori agacini okur. API'ye ulasilamazsa
+ * tum site 500 vermesin diye burada bos liste doneriz: menu daralir, sayfa acilir.
+ */
+export async function getCategoryTreeSafe(): Promise<Category[]> {
+  try {
+    return await getCategoryTree();
+  } catch (error) {
+    console.error("Kategori agaci alinamadi; menu bos gosteriliyor.", error);
+    return [];
+  }
+}
+
 export function getCategoryPage(slug: string, query: Query): Promise<CategoryPageResponse | null> {
   return apiGet<CategoryPageResponse>(`/categories/${encodeURIComponent(slug)}`, {
     query,

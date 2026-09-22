@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { Asterisk } from "lucide-react";
 
-import { getCategoryTree } from "@/lib/api";
+import { getCategoryTreeSafe } from "@/lib/api";
 import { decodeHtml } from "@/lib/decode-html";
 
 import { Wordmark } from "./wordmark";
@@ -9,7 +9,7 @@ import styles from "./storefront.module.css";
 
 /** Tum sayfalarda kullanilan koyu yesil alt bilgi. */
 export async function StorefrontFooter() {
-  const tree = await getCategoryTree();
+  const tree = await getCategoryTreeSafe();
   const popular = tree
     .filter((category) => (category.product_count ?? 0) > 0)
     .sort((a, b) => (b.product_count ?? 0) - (a.product_count ?? 0))
