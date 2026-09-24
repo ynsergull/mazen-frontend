@@ -8,6 +8,7 @@ import { Breadcrumbs } from "@/components/site/breadcrumbs";
 import { ProductGallery } from "@/components/site/product-gallery";
 import { ProductGrid } from "@/components/site/product-grid";
 import { getProductPage } from "@/lib/api";
+import { categoryName } from "@/lib/category-name";
 import { decodeHtml } from "@/lib/decode-html";
 import { formatPrice } from "@/lib/format";
 
@@ -34,9 +35,9 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
 
   const name = decodeHtml(product.name);
   const brandName = decodeHtml(product.brand?.name);
-  const categoryName = decodeHtml(product.category?.name);
+  const categoryLabel = categoryName(product.category?.name);
   const description = decodeHtml(product.description);
-  const trail = product.breadcrumb.map((crumb) => ({ name: decodeHtml(crumb.name), slug: crumb.slug }));
+  const trail = product.breadcrumb.map((crumb) => ({ name: categoryName(crumb.name), slug: crumb.slug }));
   const hasDiscount = product.list_price !== null && product.list_price > product.price;
 
   const jsonLd = {
@@ -59,7 +60,7 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
     ...(brandName ? [{ label: "Marka", value: brandName }] : []),
     { label: "Ürün kodu", value: product.sku },
     ...(product.barcode ? [{ label: "Barkod", value: product.barcode }] : []),
-    ...(categoryName ? [{ label: "Kategori", value: categoryName }] : []),
+    ...(categoryLabel ? [{ label: "Kategori", value: categoryLabel }] : []),
   ];
 
   return (

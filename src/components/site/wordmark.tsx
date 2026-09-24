@@ -15,7 +15,7 @@ export function Wordmark({ variant = "header" }: { variant?: "header" | "footer"
       <span className={styles.logoStar} aria-hidden="true">
         <Asterisk />
       </span>
-      <span className={styles.wordmarkCaption}>kırtasiye &amp; güzel şeyler</span>
+      <span className={styles.wordmarkCaption}>kırtasiye · okul · hobi</span>
     </Link>
   );
 }

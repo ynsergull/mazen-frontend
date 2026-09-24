@@ -189,9 +189,9 @@
 .navigation {
   display: flex;
   align-items: center;
-  gap: 18px;
-  min-height: 49px;
-  font-size: 12px;
+  gap: 20px;
+  min-height: 52px;
+  font-size: 13px;
   font-weight: 500;
   overflow-x: auto;
   scrollbar-width: none;
@@ -215,6 +215,34 @@
   color: var(--coral);
 }
 
+.navIcon {
+  display: grid;
+  place-items: center;
+  width: 26px;
+  height: 26px;
+  flex-shrink: 0;
+  border-radius: 50%;
+  transition: transform 0.2s ease;
+}
+
+.navIcon svg {
+  width: 14px;
+  height: 14px;
+  stroke-width: 1.8;
+}
+
+.navigation a:hover .navIcon {
+  transform: rotate(-8deg) scale(1.08);
+}
+
+/* Kategori pastel tonlari (ana sayfadaki kategori kartlariyla ayni) */
+.peach { background: #f4e2d4; color: #a2593f; }
+.yellow { background: #f4edce; color: #8d7739; }
+.mint { background: #e0e9de; color: #526c50; }
+.pink { background: #f4e1e3; color: #ab6272; }
+.lilac { background: #e7e4f1; color: #74618e; }
+.blue { background: #e1eaf0; color: #547485; }
+
 .navigation .newLink {
   color: var(--coral);
 }
@@ -234,7 +262,7 @@
 .mobileNav a {
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 12px;
   min-height: 48px;
   padding-block: 6px;
   border-bottom: 1px solid var(--hairline);
@@ -438,7 +466,7 @@
   min-height: 38px;
   padding: 8px 14px;
   border: 1px solid var(--hairline);
-  border-radius: 4px;
+  border-radius: 999px;
   background: transparent;
   font-size: 11px;
   color: var(--ink);
@@ -763,8 +791,8 @@
 
 .filterChildren .filterLink {
   min-height: 36px;
-  font-size: 11px;
-  color: var(--ink-soft);
+  font-size: 12px;
+  color: #4d5048;
 }
 
 .toggleRow {
@@ -863,6 +891,138 @@
   background: var(--paper);
   padding: 22px 20px 32px;
   overflow-y: auto;
+}
+
+/* ---------- Kategori basligi (kareli defter zemini) ---------- */
+.categoryHero {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 22px;
+  padding: 26px 28px;
+  overflow: hidden;
+  border-radius: 10px;
+  background-image:
+    linear-gradient(to right, #0000000d 1px, transparent 1px),
+    linear-gradient(to bottom, #0000000d 1px, transparent 1px);
+  background-size: 22px 22px;
+}
+
+.categoryHero::before {
+  /* defter kenar cizgisi */
+  content: "";
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 12px;
+  width: 1.5px;
+  background: #d9776280;
+}
+
+.categoryHeroIcon {
+  display: grid;
+  place-items: center;
+  width: 64px;
+  height: 64px;
+  flex-shrink: 0;
+  border-radius: 50%;
+  background: #fffdf7;
+  box-shadow: 0 2px 0 #0000000d;
+}
+
+.categoryHeroIcon svg {
+  width: 30px;
+  height: 30px;
+  stroke-width: 1.5;
+}
+
+.categoryHero .pageTitle {
+  margin-top: 6px;
+  color: var(--ink);
+}
+
+.categoryHeroMeta {
+  margin-left: auto;
+  align-self: flex-end;
+  padding: 6px 12px;
+  border-radius: 999px;
+  background: #fffdf7cc;
+  font-size: 11px;
+  color: var(--ink);
+  white-space: nowrap;
+}
+
+/* ---------- Kategori yan menusu ---------- */
+.sideBack {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  min-height: 36px;
+  margin-bottom: 6px;
+  font-size: 11px;
+  color: var(--ink-soft);
+}
+
+.sideBack:hover {
+  color: var(--coral);
+}
+
+.sideBack svg {
+  width: 14px;
+  height: 14px;
+}
+
+.sideCurrent {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-height: 40px;
+  font-size: 13px;
+  font-weight: 650;
+  color: var(--ink);
+}
+
+.sideCurrent .navIcon {
+  width: 28px;
+  height: 28px;
+}
+
+.filterLink[aria-current="page"] {
+  font-weight: 650;
+  color: var(--coral);
+}
+
+.brandMore > summary {
+  display: flex;
+  align-items: center;
+  min-height: 36px;
+  list-style: none;
+  cursor: pointer;
+  font-size: 11px;
+  font-weight: 550;
+  color: var(--coral);
+}
+
+.brandMore > summary::-webkit-details-marker {
+  display: none;
+}
+
+.brandMore[open] > summary {
+  display: none;
+}
+
+.radioDot {
+  width: 14px;
+  height: 14px;
+  flex-shrink: 0;
+  border: 1.5px solid #c9c4b5;
+  border-radius: 50%;
+  transition: border-color 0.15s;
+}
+
+.filterLinkActive .radioDot,
+.filterLink[aria-current="true"] .radioDot {
+  border: 4.5px solid var(--coral);
 }
 
 /* ---------- Urun detay ---------- */
@@ -1102,6 +1262,36 @@
   margin-inline: auto;
 }
 
+/* ---------- Yasal metin sayfalari ---------- */
+.prose {
+  width: min(760px, 100%);
+  margin-inline: auto;
+  font-size: 14px;
+  line-height: 1.85;
+  color: #45483f;
+}
+
+.prose article > * + * {
+  margin-top: 14px;
+}
+
+.prose h2 {
+  margin-top: 30px;
+  font-size: 17px;
+  font-weight: 600;
+  letter-spacing: -0.03em;
+  color: var(--ink);
+}
+
+.prose ul {
+  padding-left: 20px;
+  list-style: disc;
+}
+
+.prose li + li {
+  margin-top: 6px;
+}
+
 /* ---------- Duyarli ---------- */
 @media (max-width: 1150px) {
   .container {
@@ -1267,6 +1457,22 @@
   .pageTitle {
     font-size: 28px;
   }
+  .categoryHero {
+    flex-wrap: wrap;
+    gap: 14px;
+    padding: 20px 18px 18px 24px;
+  }
+  .categoryHeroIcon {
+    width: 48px;
+    height: 48px;
+  }
+  .categoryHeroIcon svg {
+    width: 23px;
+    height: 23px;
+  }
+  .categoryHeroMeta {
+    margin-left: 0;
+  }
   .productGrid,
   .productGridNarrow {
     gap: 24px 12px;
@@ -1352,6 +1558,7 @@
 
 @media (prefers-reduced-motion: reduce) {
   .productImage img,
+  .navIcon,
   .toggleTrack,
   .toggleTrack::after {
     transition: none !important;

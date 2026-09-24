@@ -2,21 +2,23 @@
 
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
-import { type FormEvent, useState } from "react";
+import { type FormEvent, useEffect, useState } from "react";
 
 import { useAuth } from "@/components/auth/auth-provider";
+import { readAuthError, safeNext } from "@/components/auth/auth-utils";
+import { PasswordInput } from "@/components/auth/password-input";
 import { Field, FormError } from "@/components/forms/field";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { ApiError } from "@/lib/api-client";
+
+import styles from "./auth.module.css";
 
 export function LoginForm() {
-  const { login } = useAuth();
+  const { user, loading, login } = useAuth();
   const router = useRouter();
-  const params = useSearchParams();
-  const next = params.get("next");
+  const next = useSearchParams().get("next");
+  const target = safeNext(next);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [remember, setRemember] = useState(true);
@@ -24,47 +26,66 @@ export function LoginForm() {
   const [error, setError] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
 
+  // Zaten oturum aciksa formu gostermeden hedefe gonder
+  useEffect(() => {
+    if (!loading && user && !busy) router.replace(target);
+  }, [loading, user, busy, router, target]);
+
   async function onSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     setBusy(true);
     setError(null);
     setErrors({});
     try {
-      await login(email, password, remember);
-      router.push(next && next.startsWith("/") ? next : "/hesap");
+      await login(email.trim(), password, remember);
+      router.push(target);
     } catch (e) {
-      if (e instanceof ApiError) {
-        setErrors(e.fieldErrors);
-        if (!e.errors) setError(e.message);
-      } else {
-        setError("Giriş yapılamadı, lütfen tekrar deneyin.");
-      }
-    } finally {
+      const { fields, message } = readAuthError(e, "Giriş yapılamadı, lütfen tekrar dene.");
+      setErrors(fields);
+      setError(message);
       setBusy(false);
     }
   }
 
   return (
-    <form onSubmit={onSubmit} className="space-y-4">
+    <form onSubmit={onSubmit} className="space-y-5">
       <FormError message={error} />
       <Field label="E-posta" htmlFor="email" error={errors.email}>
-        <Input id="email" type="email" autoComplete="email" required value={email} onChange={(e) => setEmail(e.target.value)} />
+        <Input
+          id="email"
+          type="email"
+          autoComplete="email"
+          inputMode="email"
+          required
+          autoFocus
+          className={styles.input}
+          aria-invalid={errors.email ? true : undefined}
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+        />
       </Field>
       <Field label="Şifre" htmlFor="password" error={errors.password}>
-        <Input id="password" type="password" autoComplete="current-password" required value={password} onChange={(e) => setPassword(e.target.value)} />
+        <PasswordInput
+          id="password"
+          autoComplete="current-password"
+          required
+          aria-invalid={errors.password ? true : undefined}
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
+        />
       </Field>
-      <div className="flex items-center justify-between">
-        <label className="flex items-center gap-2 text-sm">
+      <div className={styles.row}>
+        <label className={styles.check}>
           <Checkbox checked={remember} onCheckedChange={(checked) => setRemember(checked === true)} />
           Beni hatırla
         </label>
-        <Link href="/sifremi-unuttum" className="text-sm text-muted-foreground hover:underline">Şifremi unuttum</Link>
+        <Link href="/sifremi-unuttum" className={styles.link}>
+          Şifremi unuttum
+        </Link>
       </div>
-      <Button type="submit" className="w-full" disabled={busy}>{busy ? "Giriş yapılıyor..." : "Giriş yap"}</Button>
-      <p className="text-center text-sm text-muted-foreground">
-        Hesabınız yok mu? <Link href={next ? `/kayit?next=${encodeURIComponent(next)}` : "/kayit"} className="text-foreground underline">Kayıt olun</Link>
-      </p>
-      <Label className="sr-only">Giriş formu</Label>
+      <Button type="submit" className={styles.submit} disabled={busy}>
+        {busy ? "Giriş yapılıyor…" : "Giriş yap"}
+      </Button>
     </form>
   );
 }

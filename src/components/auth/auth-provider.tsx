@@ -14,6 +14,10 @@ export interface RegisterInput {
   phone: string;
   password: string;
   password_confirmation: string;
+  /** Uyelik sozlesmesi + KVKK onayi (zorunlu). */
+  terms: boolean;
+  /** Ticari elektronik ileti onayi (istege bagli). */
+  marketing: boolean;
 }
 
 interface AuthContextValue {

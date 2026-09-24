@@ -14,7 +14,7 @@ const inter = Inter({ subsets: ["latin", "latin-ext"], variable: "--font-sans" }
 
 export const metadata: Metadata = {
   title: { default: "Mazen Kırtasiye", template: "%s | Mazen Kırtasiye" },
-  description: "Okul, ofis ve hobi için binlerce kırtasiye ürünü. Uygun fiyat, hızlı kargo.",
+  description: "Okul çantası, defter, kalem, boya, sanat ve hobi malzemeleri: binlerce kırtasiye ürünü Mazen'de.",
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {

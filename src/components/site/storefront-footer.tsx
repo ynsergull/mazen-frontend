@@ -2,7 +2,7 @@ import Link from "next/link";
 import { Asterisk } from "lucide-react";
 
 import { getCategoryTreeSafe } from "@/lib/api";
-import { decodeHtml } from "@/lib/decode-html";
+import { categoryName } from "@/lib/category-name";
 
 import { Wordmark } from "./wordmark";
 import styles from "./storefront.module.css";
@@ -21,9 +21,9 @@ export async function StorefrontFooter() {
         <div className={styles.footerBrand}>
           <Wordmark variant="footer" />
           <p>
-            Bir defter, bir kalem,
+            Okul çantasından boya kalemine,
             <br />
-            başlamak için güzel bir sebep.
+            yeni döneme dair her şey.
           </p>
         </div>
 
@@ -34,7 +34,7 @@ export async function StorefrontFooter() {
           </Link>
           {popular.map((category) => (
             <Link key={category.id} href={`/kategori/${category.slug}`} className={styles.footerLink}>
-              {decodeHtml(category.name)}
+              {categoryName(category.name)}
             </Link>
           ))}
         </div>
@@ -53,16 +53,22 @@ export async function StorefrontFooter() {
           <Link href="/sepet" className={styles.footerLink}>
             Sepetim
           </Link>
+          <Link href="/sayfa/uyelik-sozlesmesi" className={styles.footerLink}>
+            Üyelik sözleşmesi
+          </Link>
+          <Link href="/sayfa/kvkk" className={styles.footerLink}>
+            KVKK aydınlatma metni
+          </Link>
         </div>
 
         <div className={styles.footerMessage}>
           <Asterisk size={40} aria-hidden="true" />
           <p>
-            Güzel şeyler,
+            Yeni dönem,
             <br />
-            <em>birlikte daha güzel.</em>
+            <em>yeni defterler.</em>
           </p>
-          {/* TODO: unvan, adres, MERSIS/vergi no, ETBIS logosu ve /sayfa/* yasal metinleri yayin oncesi eklenecek. */}
+          {/* TODO: unvan, adres, MERSIS/vergi no ve ETBIS logosu yayin oncesi eklenecek. */}
           <Link href="/urunler" className={styles.footerLink}>
             Kataloğa göz at
           </Link>
@@ -74,7 +80,7 @@ export async function StorefrontFooter() {
         <span className={styles.footerNote}>
           Tüm fiyatlara KDV dahildir. İşletme ve yasal bilgiler yayın öncesi eklenecektir.
         </span>
-        <span>Biraz renk. Bolca sen.</span>
+        <span>Yaz. Çiz. Boya. Keşfet.</span>
       </div>
     </footer>
   );

@@ -1,0 +1,268 @@
+/* Giris / kayit sayfalari */
+
+.shell {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: 64px;
+  align-items: stretch;
+  padding-block: 34px 72px;
+}
+
+/* ---------- Sol gorsel ---------- */
+.visual {
+  position: relative;
+  min-height: 600px;
+  overflow: hidden;
+  border-radius: 10px;
+  background: var(--paper-warm);
+}
+
+.visualImage {
+  object-fit: cover;
+}
+
+.visual::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to top, #1f2e26e6 0%, #1f2e2680 38%, transparent 70%);
+}
+
+.visualCopy {
+  position: absolute;
+  z-index: 1;
+  left: 34px;
+  right: 34px;
+  bottom: 34px;
+  color: #fffdf5;
+}
+
+.visualTitle {
+  font-size: clamp(28px, 2.6vw, 38px);
+  line-height: 1.1;
+  font-weight: 600;
+  letter-spacing: -0.05em;
+}
+
+.visualTitle em {
+  font-family: Georgia, "Times New Roman", serif;
+  font-weight: 400;
+  color: #f4c9a5;
+}
+
+.perks {
+  display: grid;
+  gap: 12px;
+  margin-top: 24px;
+  font-size: 13px;
+}
+
+.perks li {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.perks span {
+  display: grid;
+  place-items: center;
+  width: 32px;
+  height: 32px;
+  flex-shrink: 0;
+  border-radius: 50%;
+  background: #fffdf526;
+  color: #f4dca0;
+}
+
+/* ---------- Sag form ---------- */
+.formSide {
+  width: min(440px, 100%);
+  align-self: center;
+  justify-self: center;
+}
+
+.tabs {
+  display: inline-flex;
+  padding: 4px;
+  border-radius: 999px;
+  background: #f0ede4;
+}
+
+.tabs a {
+  display: inline-flex;
+  align-items: center;
+  min-height: 38px;
+  padding-inline: 20px;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 550;
+  color: var(--ink-soft);
+  transition: background 0.18s, color 0.18s;
+}
+
+.tabs a:hover {
+  color: var(--ink);
+}
+
+.tabs .tabActive {
+  background: #fff;
+  color: var(--ink);
+  box-shadow: 0 1px 2px #0000001a;
+}
+
+.title {
+  margin-top: 26px;
+  font-size: clamp(28px, 3vw, 38px);
+  line-height: 1.1;
+  font-weight: 600;
+  letter-spacing: -0.055em;
+}
+
+.intro {
+  margin-top: 10px;
+  font-size: 13px;
+  line-height: 1.7;
+  color: var(--ink-soft);
+}
+
+.input {
+  height: 44px;
+  padding-inline: 14px;
+  border-radius: 8px;
+  background: #fff;
+  font-size: 14px;
+}
+
+.passwordWrap {
+  position: relative;
+}
+
+.passwordWrap .input {
+  padding-right: 46px;
+}
+
+.eye {
+  position: absolute;
+  top: 0;
+  right: 0;
+  display: grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  color: var(--ink-soft);
+}
+
+.eye:hover {
+  color: var(--ink);
+}
+
+.submit {
+  width: 100%;
+  height: 46px;
+  border-radius: 999px;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
+  font-size: 13px;
+}
+
+.check {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  font-size: 12px;
+  line-height: 1.6;
+  color: var(--ink);
+  cursor: pointer;
+}
+
+.check > [data-slot="checkbox"] {
+  margin-top: 2px;
+}
+
+.check a {
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.check a:hover {
+  color: var(--coral);
+}
+
+.muted {
+  color: var(--ink-soft);
+}
+
+.link {
+  color: var(--ink-soft);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.link:hover {
+  color: var(--coral);
+}
+
+.strength {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 4px;
+  margin-top: 8px;
+}
+
+.strength span {
+  height: 4px;
+  border-radius: 999px;
+  background: #e5e2d9;
+  transition: background 0.2s;
+}
+
+.strength[data-level="1"] span:nth-child(-n + 1) {
+  background: #d9776a;
+}
+
+.strength[data-level="2"] span:nth-child(-n + 2) {
+  background: #e0b34f;
+}
+
+.strength[data-level="3"] span {
+  background: #5d8a62;
+}
+
+.secure {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 26px;
+  font-size: 11px;
+  color: var(--ink-soft);
+}
+
+.secure svg {
+  color: #5d8a62;
+}
+
+@media (max-width: 900px) {
+  .shell {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 0;
+    padding-block: 24px 56px;
+  }
+  .visual {
+    display: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .strength span,
+  .tabs a {
+    transition: none;
+  }
+}

@@ -1,4 +1,4 @@
-import { decodeHtml } from "@/lib/decode-html";
+import { categoryName } from "@/lib/category-name";
 import type { Category } from "@/types/api";
 
 export type Crumb = { name: string; slug: string };
@@ -36,7 +36,7 @@ export function resolveAncestors(category: Category, tree: Category[]): Crumb[] 
     const match = bySlug.get(segment) ?? byName.get(segment.toLocaleLowerCase("tr"));
     if (!match || match.slug === category.slug) continue;
     if (fromPath.some((crumb) => crumb.slug === match.slug)) continue;
-    fromPath.push({ name: decodeHtml(match.name), slug: match.slug });
+    fromPath.push({ name: categoryName(match.name), slug: match.slug });
   }
   if (fromPath.length > 0) return fromPath;
 
@@ -45,7 +45,7 @@ export function resolveAncestors(category: Category, tree: Category[]): Crumb[] 
   while (parentId !== null && fromParents.length < 5) {
     const parent = byId.get(parentId);
     if (!parent) break;
-    fromParents.unshift({ name: decodeHtml(parent.name), slug: parent.slug });
+    fromParents.unshift({ name: categoryName(parent.name), slug: parent.slug });
     parentId = parent.parent_id;
   }
   return fromParents;

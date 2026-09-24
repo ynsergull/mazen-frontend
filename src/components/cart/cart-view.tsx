@@ -30,7 +30,7 @@ export function CartView() {
         <ShoppingBag className="size-12 text-muted-foreground" />
         <h2 className="text-lg font-semibold">Sepetiniz boş</h2>
         <p className="text-sm text-muted-foreground">Binlerce kırtasiye ürünü sizi bekliyor.</p>
-        <Button render={<Link href="/" />}>Alışverişe başla</Button>
+        <Button nativeButton={false} render={<Link href="/" />}>Alışverişe başla</Button>
       </div>
     );
   }

@@ -1,6 +1,6 @@
 import Link from "next/link";
 
-import { decodeHtml } from "@/lib/decode-html";
+import { categoryName } from "@/lib/category-name";
 import { buildHref } from "@/lib/query";
 import type { Category } from "@/types/api";
 
@@ -53,14 +53,14 @@ export function CatalogFilters({ categories, params, basePath = "/urunler" }: {
                   className={`${styles.filterLink} ${isActive ? styles.filterLinkActive : ""}`}
                   aria-current={isActive ? "true" : undefined}
                 >
-                  {decodeHtml(category.name)}
+                  {categoryName(category.name)}
                   <span className={styles.filterCount}>{(category.product_count ?? 0).toLocaleString("tr-TR")}</span>
                 </Link>
                 {isActive && activeChildren.length > 0 && (
                   <div className={styles.filterChildren}>
                     {activeChildren.map((child) => (
                       <Link key={child.id} href={`/kategori/${child.slug}`} className={styles.filterLink}>
-                        {decodeHtml(child.name)}
+                        {categoryName(child.name)}
                         <span className={styles.filterCount}>
                           {(child.product_count ?? 0).toLocaleString("tr-TR")}
                         </span>

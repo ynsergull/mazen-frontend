@@ -6,6 +6,7 @@ import { useAuth } from "@/components/auth/auth-provider";
 import { Field, FormError } from "@/components/forms/field";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Checkbox } from "@/components/ui/checkbox";
 import { Input } from "@/components/ui/input";
 import { ApiError, apiFetch } from "@/lib/api-client";
 import type { User } from "@/types/api";
@@ -14,6 +15,7 @@ export function ProfileForm() {
   const { user, setUser } = useAuth();
   const [name, setName] = useState(user?.name ?? "");
   const [phone, setPhone] = useState(user?.phone ?? "");
+  const [marketing, setMarketing] = useState(user?.marketing_consent ?? false);
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [status, setStatus] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
@@ -24,7 +26,7 @@ export function ProfileForm() {
     setErrors({});
     setStatus(null);
     try {
-      const res = await apiFetch<{ user: User }>("/auth/profile", { method: "PATCH", body: { name, phone } });
+      const res = await apiFetch<{ user: User }>("/auth/profile", { method: "PATCH", body: { name, phone, marketing } });
       setUser(res.user);
       setStatus("Bilgileriniz güncellendi.");
     } catch (e) {
@@ -48,6 +50,13 @@ export function ProfileForm() {
           <Field label="Telefon" htmlFor="phone" error={errors.phone}>
             <Input id="phone" type="tel" inputMode="numeric" value={phone} onChange={(e) => setPhone(e.target.value)} />
           </Field>
+          <label className="flex items-start gap-2.5 text-sm">
+            <Checkbox className="mt-0.5" checked={marketing} onCheckedChange={(checked) => setMarketing(checked === true)} />
+            <span>
+              Kampanya ve duyurulardan e-posta/SMS ile haberdar olmak istiyorum.
+              <span className="block text-xs text-muted-foreground">Onayını istediğin zaman buradan geri alabilirsin.</span>
+            </span>
+          </label>
           {status && <p className="text-sm text-green-700">{status}</p>}
           <Button type="submit" disabled={busy}>Kaydet</Button>
         </form>

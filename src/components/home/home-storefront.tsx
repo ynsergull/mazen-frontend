@@ -2,7 +2,7 @@ import Image from "next/image";
 import Link from "next/link";
 import {
   ArrowDown, ArrowUpRight, Asterisk, Backpack, BookOpen,
-  Gift, Palette, Pencil, SlidersHorizontal,
+  Gift, Palette, Pencil, ToyBrick,
 } from "lucide-react";
 
 import { ProductGrid } from "@/components/site/product-grid";
@@ -13,11 +13,11 @@ import site from "@/components/site/storefront.module.css";
 import styles from "./home.module.css";
 
 const categories = [
-  { name: "Defter & ajanda", note: "Yeni bir sayfa", icon: BookOpen, color: "peach", query: "defter" },
+  { name: "Okul çantaları", note: "Sırtında yeni dönem", icon: Backpack, color: "mint", query: "çanta" },
+  { name: "Defterler", note: "Yeni bir sayfa", icon: BookOpen, color: "peach", query: "defter" },
   { name: "Kalemler", note: "İz bırak", icon: Pencil, color: "yellow", query: "kalem" },
-  { name: "Okula dönüş", note: "Heyecan başlasın", icon: Backpack, color: "mint", query: "okul" },
-  { name: "Sanat & hobi", note: "İçinden geldiği gibi", icon: Palette, color: "pink", query: "boya" },
-  { name: "Masa düzeni", note: "Kendine alan aç", icon: SlidersHorizontal, color: "lilac", query: "kalemlik" },
+  { name: "Boya & sanat", note: "İçinden geldiği gibi", icon: Palette, color: "pink", query: "boya" },
+  { name: "Oyuncak & hobi", note: "Oyna, üret, keşfet", icon: ToyBrick, color: "lilac", query: "oyuncak" },
   { name: "Hediyelik", note: "Küçük mutluluklar", icon: Gift, color: "blue", query: "hediye" },
 ] as const;
 
@@ -27,24 +27,24 @@ export function HomeStorefront({ data }: { data: HomeResponse }) {
       <section className={`${site.container} ${styles.hero}`} aria-labelledby="hero-title">
         <div className={styles.heroCopy}>
           <span className={`${site.eyebrow} ${styles.heroEyebrow}`}>
-            <span /> Küçük şeyler, büyük heyecanlar
+            <span /> Okula dönüş başladı
           </span>
           <h1 id="hero-title">
-            Yeni bir sayfa.
+            Yeni dönem.
             <br />
-            Biraz <span>renk.</span>
+            Yeni <span>defter.</span>
             <br />
-            Bolca sen.
+            Bolca renk.
           </h1>
           <p>
-            Bir fikrin, bir hayalin, bir sonraki güzel günün için.
-            <br className={styles.desktopBreak} /> İyi ki var dediğin kırtasiye, şimdi Mazen&rsquo;de.
+            Okul çantasından boya kalemine, yeni döneme dair her şey burada.
+            <br className={styles.desktopBreak} /> Listeni al, gerisini Mazen&rsquo;e bırak.
           </p>
-          <Button render={<a href="#kesfet" />} className={styles.primaryButton}>
-            Kendine bir şeyler seç <ArrowUpRight size={19} aria-hidden="true" />
+          <Button nativeButton={false} render={<a href="#kesfet" />} className={styles.primaryButton}>
+            Okul alışverişine başla <ArrowUpRight size={19} aria-hidden="true" />
           </Button>
           <div className={styles.heroFootnote}>
-            <span className={styles.littleLine} /> Okula, işe, hayallerine.
+            <span className={styles.littleLine} /> Okula, derse, hobine.
           </div>
         </div>
         <div className={styles.heroImage}>
@@ -58,13 +58,13 @@ export function HomeStorefront({ data }: { data: HomeResponse }) {
           <div className={styles.heroSticker} aria-hidden="true">
             <Asterisk size={26} />
             <span>
-              Güzel şeyler
+              Okula
               <br />
-              burada başlar.
+              hazır mısın?
             </span>
           </div>
           <div className={styles.imageCaption}>
-            <span>MAZEN SEÇKİSİ / 01</span>
+            <span>OKULA DÖNÜŞ / 01</span>
             <a href="#kesfet" aria-label="Mazen seçkisine git">
               <ArrowDown size={20} aria-hidden="true" />
             </a>
@@ -78,15 +78,15 @@ export function HomeStorefront({ data }: { data: HomeResponse }) {
           <Asterisk />
           <span>Çiz.</span>
           <Asterisk />
-          <span>Hayal et.</span>
+          <span>Boya.</span>
           <Asterisk />
-          <span>Kendin ol.</span>
+          <span>Kes, yapıştır.</span>
           <Asterisk />
           <span>Yaz.</span>
           <Asterisk />
           <span>Çiz.</span>
           <Asterisk />
-          <span>Hayal et.</span>
+          <span>Boya.</span>
           <Asterisk />
         </div>
       </div>
@@ -94,10 +94,10 @@ export function HomeStorefront({ data }: { data: HomeResponse }) {
       <section className={`${site.container} ${styles.categorySection}`} aria-labelledby="categories-title">
         <div className={styles.sectionHeading}>
           <div>
-            <span className={`${site.eyebrow} ${styles.sectionEyebrow}`}>Her güne bir şey</span>
-            <h2 id="categories-title">Senin dünyan hangisi?</h2>
+            <span className={`${site.eyebrow} ${styles.sectionEyebrow}`}>Okul listesi</span>
+            <h2 id="categories-title">Okul listende neler var?</h2>
           </div>
-          <p>Küçük ihtiyaçlar, güzel keşifler.</p>
+          <p>Çantadan kalemliğe, tek tek işaretle.</p>
         </div>
         <div className={styles.categoryGrid}>
           {categories.map(({ name, note, icon: Icon, color, query }) => (
@@ -116,8 +116,8 @@ export function HomeStorefront({ data }: { data: HomeResponse }) {
       <section id="kesfet" className={`${site.container} ${styles.productSection}`} aria-labelledby="products-title">
         <div className={styles.sectionHeading}>
           <div>
-            <span className={`${site.eyebrow} ${styles.sectionEyebrow}`}>Bakarken bile iyi gelir</span>
-            <h2 id="products-title">Masana çok yakışacak.</h2>
+            <span className={`${site.eyebrow} ${styles.sectionEyebrow}`}>Yeni gelenler</span>
+            <h2 id="products-title">Çantana çok yakışacak.</h2>
           </div>
           <Link href="/urunler" className={site.textLink}>
             Tüm ürünleri gör <ArrowUpRight size={18} aria-hidden="true" />
@@ -214,7 +214,8 @@ export function HomeStorefront({ data }: { data: HomeResponse }) {
               yarattığına inanıyoruz.
             </p>
             <p>
-              Mazen, okul çantandan çalışma masana kadar sana eşlik edecek güzel şeyleri bir araya getiriyor.
+              Mazen; okul çantası, defter, kalem, boya ve hobi malzemelerini tek bir yerde topluyor. Okul
+              listeni hazırlamak hiç bu kadar keyifli olmamıştı.
             </p>
             <Link href="/urunler?q=kalemlik" className={site.textLink}>
               Kendi köşeni oluştur <ArrowUpRight size={19} aria-hidden="true" />
@@ -227,13 +228,13 @@ export function HomeStorefront({ data }: { data: HomeResponse }) {
         <div>
           <BookOpen aria-hidden="true" />
           <span>
-            Her yeni başlangıca<small>Okuldan çalışma masana</small>
+            Okula hazırlık<small>Çanta, defter, kalem tek sepette</small>
           </span>
         </div>
         <div>
           <Palette aria-hidden="true" />
           <span>
-            Biraz daha renk<small>Kendini ifade etmenin binbir yolu</small>
+            Boya, çiz, üret<small>Sanat ve hobi için binbir renk</small>
           </span>
         </div>
         <div>

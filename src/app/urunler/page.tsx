@@ -10,6 +10,7 @@ import { ProductGrid } from "@/components/site/product-grid";
 import { QuerySelect } from "@/components/site/query-select";
 import { SORT_OPTIONS } from "@/components/site/query-options";
 import { getCatalog, getCategoryTree } from "@/lib/api";
+import { categoryName } from "@/lib/category-name";
 import { decodeHtml } from "@/lib/decode-html";
 import { buildHref } from "@/lib/query";
 import type { ProductSummary } from "@/types/api";
@@ -38,7 +39,7 @@ export async function generateMetadata({ searchParams }: { searchParams: SearchP
   const { q } = readParams(await searchParams);
   return {
     title: q ? `“${q}” araması` : "Tüm ürünler",
-    description: "Mazen Kırtasiye kataloğunu keşfet: okul, ofis, sanat ve hobi ürünleri.",
+    description: "Mazen Kırtasiye kataloğunu keşfet: okul çantası, defter, kalem, boya, sanat ve hobi ürünleri.",
   };
 }
 
@@ -61,7 +62,7 @@ export default async function CatalogPage({ searchParams }: { searchParams: Sear
   if (params.category) {
     chips.push({
       key: "category",
-      label: activeCategory ? decodeHtml(activeCategory.name) : params.category,
+      label: activeCategory ? categoryName(activeCategory.name) : params.category,
       href: buildHref("/urunler", params, { category: undefined }),
     });
   }
@@ -86,7 +87,7 @@ export default async function CatalogPage({ searchParams }: { searchParams: Sear
   const title = params.q
     ? `“${params.q}” için sonuçlar`
     : activeCategory
-      ? decodeHtml(activeCategory.name)
+      ? categoryName(activeCategory.name)
       : "Tüm ürünler";
 
   const filters = <CatalogFilters categories={categories} params={params} />;
@@ -96,7 +97,7 @@ export default async function CatalogPage({ searchParams }: { searchParams: Sear
       <div className={styles.pageHead}>
         <div>
           <span className={styles.eyebrow}>
-            <span /> Mazen kataloğu
+            <span /> Okul, kırtasiye ve hobi
           </span>
           <h1 className={styles.pageTitle}>{title}</h1>
         </div>
