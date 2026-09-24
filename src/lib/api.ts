@@ -9,6 +9,7 @@ import type {
   SearchResponse,
   Paginated,
   ProductSummary,
+  StoreInfo,
 } from "@/types/api";
 
 const API_URL = resolveApiUrl(process.env.API_URL, process.env.NEXT_PUBLIC_API_URL);
@@ -16,6 +17,7 @@ const API_URL = resolveApiUrl(process.env.API_URL, process.env.NEXT_PUBLIC_API_U
 export const CACHE_TAGS = {
   products: "products",
   categories: "categories",
+  store: "store",
 } as const;
 
 type Query = Record<string, string | number | undefined>;
@@ -64,6 +66,19 @@ export async function getCategoryTree(): Promise<Category[]> {
     revalidate: 3600,
   });
   return data?.data ?? [];
+}
+
+/**
+ * Satici bilgileri + kargo kurallari (sozlesmeler, iletisim, alt bilgi). Admin'de degisince
+ * "store" etiketiyle aninda tazelenir. API'ye ulasilamazsa null doner; sayfalar yine acilir.
+ */
+export async function getStoreInfo(): Promise<StoreInfo | null> {
+  try {
+    return await apiGet<StoreInfo>("/store", { tags: [CACHE_TAGS.store], revalidate: 3600 });
+  } catch (error) {
+    console.error("Magaza bilgisi alinamadi.", error);
+    return null;
+  }
 }
 
 /**

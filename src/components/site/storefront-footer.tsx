@@ -1,7 +1,8 @@
 import Link from "next/link";
 import { Asterisk } from "lucide-react";
 
-import { getCategoryTreeSafe } from "@/lib/api";
+import { LEGAL_NAV } from "@/components/legal/legal-pages";
+import { getCategoryTreeSafe, getStoreInfo } from "@/lib/api";
 import { categoryName } from "@/lib/category-name";
 
 import { Wordmark } from "./wordmark";
@@ -9,7 +10,8 @@ import styles from "./storefront.module.css";
 
 /** Tum sayfalarda kullanilan koyu yesil alt bilgi. */
 export async function StorefrontFooter() {
-  const tree = await getCategoryTreeSafe();
+  const [tree, store] = await Promise.all([getCategoryTreeSafe(), getStoreInfo()]);
+  const business = store?.business;
   const popular = tree
     .filter((category) => (category.product_count ?? 0) > 0)
     .sort((a, b) => (b.product_count ?? 0) - (a.product_count ?? 0))
@@ -53,11 +55,8 @@ export async function StorefrontFooter() {
           <Link href="/sepet" className={styles.footerLink}>
             Sepetim
           </Link>
-          <Link href="/sayfa/uyelik-sozlesmesi" className={styles.footerLink}>
-            Üyelik sözleşmesi
-          </Link>
-          <Link href="/sayfa/kvkk" className={styles.footerLink}>
-            KVKK aydınlatma metni
+          <Link href="/sayfa/iletisim" className={styles.footerLink}>
+            İletişim
           </Link>
         </div>
 
@@ -68,17 +67,28 @@ export async function StorefrontFooter() {
             <br />
             <em>yeni defterler.</em>
           </p>
-          {/* TODO: unvan, adres, MERSIS/vergi no ve ETBIS logosu yayin oncesi eklenecek. */}
+          {/* TODO: ETBIS karekodu kayit tamamlaninca buraya eklenecek. */}
           <Link href="/urunler" className={styles.footerLink}>
             Kataloğa göz at
           </Link>
         </div>
       </div>
 
+      <nav className={`${styles.container} ${styles.footerLegal}`} aria-label="Yasal bilgiler">
+        {LEGAL_NAV.map((item) => (
+          <Link key={item.slug} href={`/sayfa/${item.slug}`}>
+            {item.label}
+          </Link>
+        ))}
+      </nav>
+
       <div className={`${styles.container} ${styles.footerBottom}`}>
-        <span>© {new Date().getFullYear()} Mazen Kırtasiye</span>
-        <span className={styles.footerNote}>
-          Tüm fiyatlara KDV dahildir. İşletme ve yasal bilgiler yayın öncesi eklenecektir.
+        <span>© {new Date().getFullYear()} {business?.brand_name ?? "Mazen Kırtasiye"}</span>
+        <span className={`${styles.footerNote} ${styles.footerSeller}`}>
+          {business?.seller_name && `${business.seller_name} · `}
+          {business?.address && `${business.address} · `}
+          {business?.tax_office && business.tax_number && `${business.tax_office} VD ${business.tax_number} · `}
+          Tüm fiyatlara KDV dahildir.
         </span>
         <span>Yaz. Çiz. Boya. Keşfet.</span>
       </div>

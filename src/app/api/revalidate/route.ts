@@ -1,7 +1,7 @@
 import { revalidateTag } from "next/cache";
 import { NextResponse } from "next/server";
 
-const ALLOWED_TAGS = new Set(["products", "categories"]);
+const ALLOWED_TAGS = new Set(["products", "categories", "store"]);
 
 /**
  * Laravel senkron bitince buraya POST atar: { secret, tags: ["products","categories"] }

@@ -1292,6 +1292,89 @@
   margin-top: 6px;
 }
 
+.prose ol {
+  padding-left: 20px;
+  list-style: decimal;
+}
+
+.prose article a {
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.prose article a:hover {
+  color: var(--coral);
+}
+
+.prose dl {
+  margin-top: 10px;
+  border: 1px solid var(--hairline);
+  border-radius: 8px;
+  background: #fff;
+  font-size: 13px;
+}
+
+.prose dl > div {
+  display: grid;
+  grid-template-columns: 170px minmax(0, 1fr);
+  gap: 12px;
+  padding: 10px 14px;
+}
+
+.prose dl > div + div {
+  border-top: 1px solid var(--hairline);
+}
+
+.prose dt {
+  color: var(--ink-soft);
+}
+
+.prose dd {
+  color: var(--ink);
+  word-break: break-word;
+}
+
+.legalNav {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 44px;
+  padding-top: 22px;
+  border-top: 1px solid var(--hairline);
+}
+
+.footerLegal {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 18px;
+  padding-block: 18px;
+  border-top: 1px solid #ffffff20;
+  font-size: 11px;
+}
+
+.footerLegal a {
+  display: inline-flex;
+  align-items: center;
+  min-height: 32px;
+  color: #bbc5b4;
+}
+
+.footerLegal a:hover {
+  color: #fff;
+}
+
+.footerSeller {
+  max-width: 640px;
+  line-height: 1.7;
+}
+
+@media (max-width: 700px) {
+  .prose dl > div {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 2px;
+  }
+}
+
 /* ---------- Duyarli ---------- */
 @media (max-width: 1150px) {
   .container {

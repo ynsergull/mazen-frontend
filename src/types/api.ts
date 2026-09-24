@@ -124,6 +124,25 @@ export interface User {
   created_at: string | null;
 }
 
+export interface BusinessInfo {
+  seller_name: string | null;
+  brand_name: string | null;
+  address: string | null;
+  tax_office: string | null;
+  tax_number: string | null;
+  mersis: string | null;
+  phone: string | null;
+  email: string | null;
+  kep: string | null;
+  return_address: string | null;
+  dispatch_days: string | null;
+}
+
+export interface StoreInfo {
+  business: BusinessInfo;
+  shipping: { fee: number; free_threshold: number };
+}
+
 export type InvoiceType = "individual" | "corporate";
 
 export interface Address {
