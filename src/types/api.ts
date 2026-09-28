@@ -141,6 +141,114 @@ export interface BusinessInfo {
 export interface StoreInfo {
   business: BusinessInfo;
   shipping: { fee: number; free_threshold: number };
+  /** Odeme acik mi; test_mode: sandbox/sahte saglayici (vitrinde uyari) */
+  checkout: { enabled: boolean; test_mode: boolean };
+}
+
+export type OrderStatus =
+  | "pending_payment"
+  | "paid"
+  | "preparing"
+  | "shipped"
+  | "delivered"
+  | "cancelled"
+  | "refunded";
+
+export type PaymentStatus = "unpaid" | "paid" | "failed" | "refunded" | "partially_refunded";
+
+/** Siparis anindaki adres kopyasi (TC gosterilmez, vergi no maskeli) */
+export interface OrderAddress {
+  first_name: string | null;
+  last_name: string | null;
+  phone: string | null;
+  province: string | null;
+  district: string | null;
+  address_line: string | null;
+  postal_code: string | null;
+  invoice_type: InvoiceType;
+  company_name: string | null;
+  tax_office: string | null;
+  tax_number_masked: string | null;
+}
+
+export interface OrderItem {
+  id: number;
+  sku: string;
+  name: string;
+  quantity: number;
+  unit_price: number;
+  line_total: number;
+  product: { slug: string; image: { thumb: string } | null } | null;
+}
+
+export interface OrderShipment {
+  carrier: string | null;
+  tracking_number: string | null;
+  status: string;
+  shipped_at: string | null;
+  delivered_at: string | null;
+}
+
+export interface Order {
+  public_id: string;
+  number: string;
+  status: OrderStatus;
+  status_label: string;
+  payment_status: PaymentStatus;
+  can_pay: boolean;
+  currency: string;
+  customer_email: string;
+  items: OrderItem[];
+  subtotal: number;
+  discount_total: number;
+  shipping_total: number;
+  tax_total: number;
+  grand_total: number;
+  shipping_address: OrderAddress | null;
+  billing_address: OrderAddress | null;
+  payment: { card_association: string | null; card_last_four: string | null; installment: number; paid_at: string | null } | null;
+  shipments: OrderShipment[];
+  placed_at: string | null;
+  paid_at: string | null;
+  expires_at: string | null;
+  created_at: string | null;
+}
+
+export interface OrderSummary {
+  public_id: string;
+  number: string;
+  status: OrderStatus;
+  status_label: string;
+  payment_status: PaymentStatus;
+  can_pay: boolean;
+  item_count: number;
+  grand_total: number;
+  created_at: string | null;
+}
+
+/** Odeme formu oturumu: musteri page_url'e yonlendirilir (iyzico sayfasi) */
+export interface PaymentSession {
+  page_url: string;
+  expires_at: string | null;
+}
+
+/** POST /checkout govdesi: adres ya defterden (id) ya formdan */
+export interface CheckoutInput {
+  idempotency_key: string;
+  email?: string;
+  accept_terms: boolean;
+  shipping_address_id?: number;
+  shipping_address?: Omit<AddressInput, "title" | "is_default">;
+  billing_same_as_shipping: boolean;
+  billing_address_id?: number;
+  billing_address?: Omit<AddressInput, "title" | "is_default">;
+  save_address?: boolean;
+}
+
+export interface CheckoutResponse {
+  order: Order;
+  payment: PaymentSession | null;
+  payment_error: string | null;
 }
 
 export type InvoiceType = "individual" | "corporate";

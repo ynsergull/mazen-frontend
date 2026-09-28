@@ -17,12 +17,14 @@ const MISSING = "yakında eklenecek";
 
 /** Alt bilgi ve sayfa altindaki gezinme icin sirali liste. */
 export const LEGAL_NAV = [
+  { slug: "hakkimizda", label: "Hakkımızda" },
   { slug: "iletisim", label: "İletişim" },
   { slug: "teslimat-ve-kargo", label: "Teslimat ve kargo" },
   { slug: "iade-ve-cayma", label: "İade ve cayma" },
   { slug: "mesafeli-satis-sozlesmesi", label: "Mesafeli satış sözleşmesi" },
   { slug: "on-bilgilendirme-formu", label: "Ön bilgilendirme formu" },
   { slug: "uyelik-sozlesmesi", label: "Üyelik sözleşmesi" },
+  { slug: "gizlilik-politikasi", label: "Gizlilik politikası" },
   { slug: "kvkk", label: "KVKK aydınlatma metni" },
   { slug: "cerez-politikasi", label: "Çerez politikası" },
 ] as const;
@@ -115,6 +117,87 @@ function Complaints() {
 }
 
 const pages: Record<LegalSlug, (c: Ctx) => LegalPage> = {
+  hakkimizda: ({ b, seller, site }) => ({
+    title: "Hakkımızda",
+    body: (
+      <>
+        <p>
+          {b.brand_name ?? "Mazen Kırtasiye"}, 2019’dan bu yana İstanbul Gaziosmanpaşa’da hizmet veren bir kırtasiye
+          mağazasıdır. Okul çantasından deftere, boya kaleminden ofis malzemesine binlerce ürünü mağazamızın yanı sıra
+          artık {site} üzerinden Türkiye’nin her yerine ulaştırıyoruz.
+        </p>
+        <h2>Ne satıyoruz?</h2>
+        <ul>
+          <li>Okul ve ofis kırtasiyesi: defter, kalem, silgi, dosya, ajanda</li>
+          <li>Sanat ve hobi malzemeleri: boya, fırça, resim kağıdı, maket</li>
+          <li>Okul çantaları, beslenme çantaları ve matara</li>
+          <li>Hediyelik ve oyun ürünleri</li>
+        </ul>
+        <h2>Nasıl çalışıyoruz?</h2>
+        <ul>
+          <li>Ürünler Türkiye’deki yetkili distribütörlerden tedarik edilir; katalog ve stok bilgisi her gün güncellenir.</li>
+          <li>Ödemeler lisanslı ödeme kuruluşu iyzico üzerinden 3D Secure ile alınır; kart bilgileriniz bize ulaşmaz.</li>
+          <li>Siparişler en geç {b.dispatch_days ?? "3"} iş günü içinde kargoya verilir; 14 gün içinde koşulsuz iade hakkınız vardır.</li>
+        </ul>
+        <SellerTable b={b} title="İşletme bilgileri" />
+        <p>Satıcı: {seller}. Sorularınız için <Link href="/sayfa/iletisim">İletişim</Link> sayfasındaki kanalları kullanabilirsiniz.</p>
+      </>
+    ),
+  }),
+
+  "gizlilik-politikasi": ({ b, seller, contact }) => ({
+    title: "Gizlilik Politikası",
+    body: (
+      <>
+        <p>
+          {seller} olarak sitemizi ziyaret eden ve alışveriş yapan herkesin gizliliğine önem veriyoruz. Bu politika,
+          hangi bilgileri neden topladığımızı, nasıl koruduğumuzu ve kimlerle paylaştığımızı özetler. Yasal
+          ayrıntılar <Link href="/sayfa/kvkk">KVKK Aydınlatma Metni</Link>’nde yer alır.
+        </p>
+        <h2>Topladığımız bilgiler</h2>
+        <ul>
+          <li><strong>Hesap ve sipariş bilgileri:</strong> ad soyad, e-posta, telefon, teslimat ve fatura adresi; kurumsal faturada vergi bilgileri.</li>
+          <li><strong>Alışveriş bilgileri:</strong> sepet, sipariş, iade ve destek kayıtları.</li>
+          <li><strong>Teknik bilgiler:</strong> IP adresi, tarayıcı ve cihaz bilgisi, oturum kayıtları (güvenlik ve hata takibi için).</li>
+        </ul>
+        <h2>Ödeme güvenliği</h2>
+        <p>
+          Kart bilgileriniz sitemizde girilmez ve saklanmaz. Ödeme, BDDK lisanslı ödeme kuruluşu <strong>iyzico</strong>’nun
+          güvenli sayfasında 3D Secure doğrulamasıyla alınır. Bize yalnızca ödemenin sonucu, kartın ilk ve son haneleri ile
+          kart tipi iletilir.
+        </p>
+        <h2>Bilgilerinizi nasıl kullanıyoruz?</h2>
+        <ul>
+          <li>Siparişinizi almak, faturalandırmak, kargoya vermek ve sizi bilgilendirmek için,</li>
+          <li>Hesabınızı yönetmek, sorularınızı ve iade taleplerinizi yanıtlamak için,</li>
+          <li>Dolandırıcılığı önlemek ve sitenin güvenliğini sağlamak için,</li>
+          <li>Yalnızca onay verdiyseniz kampanya ve duyuru göndermek için.</li>
+        </ul>
+        <h2>Kimlerle paylaşıyoruz?</h2>
+        <p>
+          Bilgileriniz yalnızca hizmeti sunmak için gerekli olduğu ölçüde kargo firması, ödeme kuruluşu, e-fatura ve e-posta
+          hizmet sağlayıcıları ve barındırma sağlayıcımızla paylaşılır; yasal zorunluluk halinde yetkili kurumlara iletilir.
+          Bilgileriniz üçüncü kişilere satılmaz veya pazarlama amacıyla devredilmez.
+        </p>
+        <h2>Saklama ve güvenlik</h2>
+        <p>
+          Verileriniz Türkiye’deki sunucularda, şifreli bağlantı (HTTPS) ve erişim kontrolleriyle korunur; kimlik ve vergi
+          numaraları veritabanında şifreli tutulur. Sipariş ve fatura kayıtları mevzuatın öngördüğü süre boyunca saklanır.
+        </p>
+        <h2>Çerezler</h2>
+        <p>
+          Sitemiz yalnızca oturum, güvenlik ve sepet için zorunlu çerezleri kullanır. Ayrıntılar{" "}
+          <Link href="/sayfa/cerez-politikasi">Çerez Politikası</Link>’nda.
+        </p>
+        <h2>Haklarınız ve iletişim</h2>
+        <p>
+          Bilgilerinize erişme, düzeltme ve silme talepleriniz için {contact} üzerinden veya {b.address ?? "işletme adresimize"}{" "}
+          yazılı olarak başvurabilirsiniz. Bu politika güncellendiğinde bu sayfada yayımlanır.
+        </p>
+      </>
+    ),
+  }),
+
   iletisim: ({ b }) => ({
     title: "İletişim",
     body: (

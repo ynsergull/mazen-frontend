@@ -5,6 +5,7 @@ import Link from "next/link";
 import { ImageOff, Minus, Plus, ShoppingBag, Trash2 } from "lucide-react";
 
 import { useCart } from "@/components/cart/cart-provider";
+import { PaymentLogos } from "@/components/site/payment-logos";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
@@ -12,7 +13,7 @@ import { Separator } from "@/components/ui/separator";
 import { Skeleton } from "@/components/ui/skeleton";
 import { formatPrice } from "@/lib/format";
 
-export function CartView() {
+export function CartView({ checkoutEnabled = false }: { checkoutEnabled?: boolean }) {
   const { cart, loading, error, setQty, remove, clear } = useCart();
 
   if (loading) {
@@ -102,7 +103,12 @@ export function CartView() {
             <div className="flex justify-between text-base font-semibold"><dt>Toplam</dt><dd>{formatPrice(cart.total)}</dd></div>
           </dl>
           <p className="text-xs text-muted-foreground">Tüm fiyatlara KDV dahildir.</p>
-          <Button size="lg" className="w-full" disabled>Ödemeye geç (yakında)</Button>
+          {checkoutEnabled ? (
+            <Button size="lg" className="w-full" nativeButton={false} render={<Link href="/odeme" />}>Ödemeye geç</Button>
+          ) : (
+            <Button size="lg" className="w-full" disabled>Ödemeye geç (yakında)</Button>
+          )}
+          <PaymentLogos compact />
         </CardContent>
       </Card>
     </div>

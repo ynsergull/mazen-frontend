@@ -2,6 +2,7 @@ import Link from "next/link";
 import { Asterisk } from "lucide-react";
 
 import { LEGAL_NAV } from "@/components/legal/legal-pages";
+import { PaymentLogos } from "@/components/site/payment-logos";
 import { getCategoryTreeSafe, getStoreInfo } from "@/lib/api";
 import { categoryName } from "@/lib/category-name";
 
@@ -55,9 +56,22 @@ export async function StorefrontFooter() {
           <Link href="/sepet" className={styles.footerLink}>
             Sepetim
           </Link>
+          <Link href="/sayfa/hakkimizda" className={styles.footerLink}>
+            Hakkımızda
+          </Link>
           <Link href="/sayfa/iletisim" className={styles.footerLink}>
             İletişim
           </Link>
+          {business?.phone && (
+            <a href={`tel:${business.phone.replace(/\s/g, "")}`} className={styles.footerLink}>
+              {business.phone}
+            </a>
+          )}
+          {business?.email && (
+            <a href={`mailto:${business.email}`} className={styles.footerLink}>
+              {business.email}
+            </a>
+          )}
         </div>
 
         <div className={styles.footerMessage}>
@@ -81,6 +95,11 @@ export async function StorefrontFooter() {
           </Link>
         ))}
       </nav>
+
+      {/* iyzico uye isyeri sarti: odeme logolari sitede gorunur olmali */}
+      <div className={`${styles.container} ${styles.footerPayments}`}>
+        <PaymentLogos compact className="justify-center" />
+      </div>
 
       <div className={`${styles.container} ${styles.footerBottom}`}>
         <span>© {new Date().getFullYear()} {business?.brand_name ?? "Mazen Kırtasiye"}</span>

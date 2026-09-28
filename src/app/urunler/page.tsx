@@ -156,8 +156,7 @@ export default async function CatalogPage({ searchParams }: { searchParams: Sear
           <Pagination meta={meta} basePath="/urunler" query={params} />
 
           <p className="mt-8 text-center text-[11px] text-muted-foreground">
-            Stok bilgisi tedarikçinin var/yok bildirimidir; kesin stok adedi değildir. Online ödeme henüz açık
-            değildir.
+            Stok bilgisi tedarikçinin var/yok bildirimidir; kesin stok adedi değildir.
           </p>
         </div>
       </div>

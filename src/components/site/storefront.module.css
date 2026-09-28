@@ -1343,6 +1343,18 @@
   border-top: 1px solid var(--hairline);
 }
 
+/* Odeme logolari (iyzico uye isyeri sarti) */
+.footerPayments {
+  display: flex;
+  justify-content: center;
+  padding-block: 14px;
+  border-top: 1px solid #ffffff20;
+}
+
+.footerPayments li:last-child {
+  color: #c0c8b8;
+}
+
 .footerLegal {
   display: flex;
   flex-wrap: wrap;
