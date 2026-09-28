@@ -214,7 +214,7 @@ export function CheckoutForm({ store }: { store: StoreInfo }) {
   return (
     <form onSubmit={onSubmit} className="grid gap-6 lg:grid-cols-[1fr_380px]">
       <div className="space-y-6">
-        {store.checkout.test_mode && (
+        {store.checkout?.test_mode && (
           <p className="rounded-md border border-amber-300 bg-amber-50 px-3 py-2 text-xs text-amber-900">
             <strong>Test modu:</strong> Ödeme altyapısı deneme ortamında çalışıyor; gerçek kartınızdan para çekilmez.
           </p>

@@ -20,7 +20,7 @@ export default async function CheckoutPage() {
     <div className={`${styles.container} ${styles.page}`}>
       <PageHeading eyebrow="Alışverişin" title="Ödeme" meta="Adres bilgilerini gir, ödemeni iyzico güvencesiyle tamamla." />
       <div className="mt-8">
-        {store?.checkout.enabled ? (
+        {store?.checkout?.enabled ? (
           <CheckoutForm store={store} />
         ) : (
           <div className={styles.emptyState}>

@@ -16,7 +16,7 @@ export default async function CartPage() {
     <div className={`${styles.container} ${styles.page}`}>
       <PageHeading eyebrow="Alışverişin" title="Sepetim" meta="Tüm fiyatlara KDV dahildir." />
       <div className="mt-8">
-        <CartView checkoutEnabled={store?.checkout.enabled ?? false} />
+        <CartView checkoutEnabled={store?.checkout?.enabled ?? false} />
       </div>
     </div>
   );
