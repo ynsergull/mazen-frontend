@@ -4,10 +4,11 @@ import { CatalogImage as Image } from "@/components/site/catalog-image";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useCallback, useEffect, useState } from "react";
-import { CheckCircle2, ImageOff, Loader2, PackageSearch, XCircle } from "lucide-react";
+import { CheckCircle2, FileText, ImageOff, Loader2, PackageSearch, XCircle } from "lucide-react";
 
 import { useAuth } from "@/components/auth/auth-provider";
 import { useCart } from "@/components/cart/cart-provider";
+import { AgreementsDialog, CHECKOUT_AGREEMENTS, useAgreementsDialog } from "@/components/legal/agreements-dialog";
 import { formatDateTime, orderStatusClass } from "@/components/orders/order-status";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
@@ -53,7 +54,12 @@ function OutcomeBanner({ outcome, order }: { outcome: string | null; order: Orde
         <XCircle className="mt-0.5 size-5 shrink-0" />
         <div>
           <p className="font-semibold">{outcome === "hata" ? "Ödeme sonucu alınamadı" : "Ödeme alınamadı"}</p>
-          <p>Bankanız işlemi onaylamadı ya da işlem yarıda kaldı. Kartınızdan para çekilmedi; aşağıdan yeniden deneyebilirsiniz.</p>
+          {/* Neden: banka hata kodu ya da 3D Secure sonucundan sunucuda Turkceye cevrilir */}
+          {order.payment_error && outcome !== "hata" && <p className="font-medium">{order.payment_error}</p>}
+          <p>
+            {order.payment_error && outcome !== "hata" ? "" : "Bankanız işlemi onaylamadı ya da işlem yarıda kaldı. "}
+            Kartınızdan para çekilmedi; {order.can_pay ? "aşağıdan yeniden deneyebilirsiniz." : "sepetinizden yeniden sipariş verebilirsiniz."}
+          </p>
         </div>
       </div>
     );
@@ -73,6 +79,8 @@ export function OrderDetail({ publicId }: { publicId: string }) {
   const [attempt, setAttempt] = useState(0);
   const [paying, setPaying] = useState(false);
   const [payError, setPayError] = useState<string | null>(null);
+  // Onaylanan metinler degismez: ilk acilista yuklenir, sonra onbellekten gosterilir
+  const agreements = useAgreementsDialog(() => ordersApi.agreements(publicId), { cache: true });
 
   // Uye siparisi giris gerektirir: oturum durumu belli olmadan sorma. "Tekrar dene" attempt'i artirir.
   useEffect(() => {
@@ -246,6 +254,18 @@ export function OrderDetail({ publicId }: { publicId: string }) {
               <AddressBlock title="Fatura adresi" address={order.billing_address} />
             </CardContent>
           </Card>
+          {order.has_agreements && (
+            <Card>
+              <CardContent className="space-y-2 text-sm">
+                <h3 className="font-semibold">Onayladığınız sözleşmeler</h3>
+                {CHECKOUT_AGREEMENTS.map((doc) => (
+                  <button key={doc.slug} type="button" onClick={() => agreements.show(doc.slug)} className="flex items-center gap-2 text-left underline underline-offset-2">
+                    <FileText className="size-4 shrink-0 text-muted-foreground" /> {doc.title}
+                  </button>
+                ))}
+              </CardContent>
+            </Card>
+          )}
           <p className="text-xs text-muted-foreground">
             Sorun mu var? <Link href="/sayfa/iletisim" className="underline">Bize yazın</Link>; iade için{" "}
             <Link href="/sayfa/iade-ve-cayma" className="underline">İade ve cayma</Link> sayfasına bakın.
@@ -255,6 +275,8 @@ export function OrderDetail({ publicId }: { publicId: string }) {
           )}
         </div>
       </div>
+
+      <AgreementsDialog dialog={agreements} description={`${order.number} numaralı sipariş için onayladığınız metinlerin sipariş anındaki kopyası.`} />
     </div>
   );
 }

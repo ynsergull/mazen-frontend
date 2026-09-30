@@ -329,36 +329,49 @@
   color: #fff;
 }
 
-.footerMessage {
+/* Iletisim blogu: satici, acik adres, telefon, e-posta (mobilde de gorunur) */
+.footerContact {
   border-left: 1px solid #ffffff20;
   padding-left: 40px;
+  font-style: normal;
 }
 
-.footerMessage > svg {
-  color: #ddb07d;
-  margin-bottom: 13px;
-  stroke-width: 1.5;
+.footerContactName {
+  margin-bottom: 10px;
+  color: #f6f3e7;
+  font-size: 13px;
+  font-weight: 550;
+  letter-spacing: -0.01em;
 }
 
-.footerMessage > p {
-  font-size: 23px;
-  line-height: 1.25;
-  letter-spacing: -0.04em;
-}
-
-.footerMessage em {
-  font-family: Georgia, "Times New Roman", serif;
-  font-weight: 400;
-  color: #d9c99b;
-}
-
-.footerMessage > a {
-  display: inline-flex;
-  align-items: center;
-  min-height: 44px;
-  margin-top: 6px;
+.footerContactLine {
+  display: flex;
+  align-items: flex-start;
+  gap: 9px;
+  min-height: 32px;
   color: #bbc5b4;
   font-size: 11px;
+  line-height: 1.6;
+  word-break: break-word;
+}
+
+.footerContactLine > svg {
+  flex: none;
+  width: 14px;
+  height: 14px;
+  margin-top: 2px;
+  color: #ddb07d;
+  stroke-width: 1.6;
+}
+
+a.footerContactLine:hover {
+  color: #fff;
+}
+
+.footerContactMeta {
+  margin-top: 4px;
+  color: #93a08d;
+  font-size: 10px;
 }
 
 .footerBottom {
@@ -1343,16 +1356,129 @@
   border-top: 1px solid var(--hairline);
 }
 
-/* Odeme logolari (iyzico uye isyeri sarti) */
+/* Cerez bilgilendirmesi (yalnizca zorunlu cerez: onay degil bilgi) */
+.cookieNotice {
+  position: fixed;
+  left: 16px;
+  bottom: calc(16px + env(safe-area-inset-bottom));
+  z-index: 40;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  width: min(520px, calc(100% - 32px));
+  padding: 14px 16px;
+  border: 1px solid var(--hairline);
+  border-radius: 12px;
+  background: #fffdf8;
+  box-shadow: 0 12px 32px #283c3226;
+  color: #45483f;
+  font-size: 12px;
+  line-height: 1.6;
+}
+
+.cookieNotice a {
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+.cookieNoticeButton {
+  flex: none;
+  min-height: 40px;
+  padding: 0 18px;
+  border-radius: 999px;
+  background: var(--deep-green);
+  color: #f6f3e7;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.cookieNoticeButton:hover {
+  background: #1e2e26;
+}
+
+@media (max-width: 850px) {
+  /* Urun sayfasindaki sabit "sepete ekle" cubugunun ustunde dursun */
+  .cookieNotice {
+    bottom: calc(84px + env(safe-area-inset-bottom));
+  }
+}
+
+/* Resmi iyzico logo bandi (uye isyeri sarti): sag altta, acik zeminli kutuda */
 .footerPayments {
   display: flex;
-  justify-content: center;
-  padding-block: 14px;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px 28px;
+  padding-block: 16px;
   border-top: 1px solid #ffffff20;
 }
 
-.footerPayments li:last-child {
-  color: #c0c8b8;
+.footerPayments > p {
+  max-width: 460px;
+  color: #bbc5b4;
+  font-size: 10px;
+  line-height: 1.6;
+}
+
+/* Yasal metin icindeki tablolar (siparis ozeti) ve siparise ozel alan notu */
+.prose h3 {
+  margin-top: 20px;
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--ink);
+}
+
+.prose :global(.legal-table) {
+  overflow-x: auto;
+  border: 1px solid var(--hairline);
+  border-radius: 8px;
+  background: #fff;
+}
+
+.prose table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+  line-height: 1.5;
+}
+
+.prose th,
+.prose td {
+  padding: 8px 12px;
+  border-bottom: 1px solid var(--hairline);
+  text-align: left;
+  vertical-align: top;
+}
+
+.prose thead th {
+  color: var(--ink-soft);
+  font-weight: 500;
+  white-space: nowrap;
+}
+
+.prose tfoot th {
+  color: var(--ink-soft);
+  font-weight: 400;
+  text-align: right;
+}
+
+.prose tfoot tr:last-child th,
+.prose tfoot tr:last-child td {
+  border-bottom: 0;
+}
+
+.prose td small {
+  color: var(--ink-soft);
+  font-size: 11px;
+}
+
+.prose :global(.legal-pending) {
+  padding: 10px 14px;
+  border: 1px dashed var(--hairline);
+  border-radius: 8px;
+  color: var(--ink-soft);
+  font-size: 13px;
 }
 
 .footerLegal {
@@ -1415,7 +1541,7 @@
   .footerTop {
     gap: 28px;
   }
-  .footerMessage {
+  .footerContact {
     padding-left: 25px;
   }
   .productLayout {
@@ -1481,8 +1607,18 @@
   .footerTop {
     grid-template-columns: 1.3fr 1fr 1fr;
   }
-  .footerMessage {
-    display: none;
+  .footerContact {
+    grid-column: 1 / -1;
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    column-gap: 22px;
+    border-left: 0;
+    border-top: 1px solid #ffffff20;
+    padding: 24px 0 0;
+  }
+  .footerContact > h2,
+  .footerContact > .footerContactName {
+    grid-column: 1 / -1;
   }
   .footerBottom > span:last-child {
     display: none;
@@ -1608,6 +1744,12 @@
     font-size: 11px;
   }
   .footerLink {
+    min-height: 40px;
+  }
+  .footerContact {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .footerContactLine {
     min-height: 40px;
   }
   .footerBottom {

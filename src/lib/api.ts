@@ -5,6 +5,8 @@ import type {
   Category,
   CategoryPageResponse,
   HomeResponse,
+  LegalPageDetail,
+  LegalPageLink,
   ProductPageResponse,
   SearchResponse,
   Paginated,
@@ -18,6 +20,7 @@ export const CACHE_TAGS = {
   products: "products",
   categories: "categories",
   store: "store",
+  legal: "legal",
 } as const;
 
 type Query = Record<string, string | number | undefined>;
@@ -79,6 +82,28 @@ export async function getStoreInfo(): Promise<StoreInfo | null> {
     console.error("Magaza bilgisi alinamadi.", error);
     return null;
   }
+}
+
+/**
+ * Yasal/kurumsal sayfa listesi (alt bilgi). Admin'de sayfa ya da isletme bilgisi degisince "legal"
+ * etiketiyle tazelenir. API'ye ulasilamazsa bos liste: alt bilgi yine acilir.
+ */
+export async function getLegalPagesSafe(): Promise<LegalPageLink[]> {
+  try {
+    const data = await apiGet<{ data: LegalPageLink[] }>("/pages", { tags: [CACHE_TAGS.legal], revalidate: 3600 });
+    return data?.data ?? [];
+  } catch (error) {
+    console.error("Yasal sayfa listesi alinamadi.", error);
+    return [];
+  }
+}
+
+export async function getLegalPage(slug: string): Promise<LegalPageDetail | null> {
+  const data = await apiGet<{ page: LegalPageDetail }>(`/pages/${encodeURIComponent(slug)}`, {
+    tags: [CACHE_TAGS.legal],
+    revalidate: 3600,
+  });
+  return data?.page ?? null;
 }
 
 /**

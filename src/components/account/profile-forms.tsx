@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { type FormEvent, useState } from "react";
 
 import { useAuth } from "@/components/auth/auth-provider";
@@ -54,7 +55,10 @@ export function ProfileForm() {
             <Checkbox className="mt-0.5" checked={marketing} onCheckedChange={(checked) => setMarketing(checked === true)} />
             <span>
               Kampanya ve duyurulardan e-posta/SMS ile haberdar olmak istiyorum.
-              <span className="block text-xs text-muted-foreground">Onayını istediğin zaman buradan geri alabilirsin.</span>
+              <span className="block text-xs text-muted-foreground">
+                Kapsam: <Link href="/sayfa/acik-riza-metni" target="_blank" className="underline">Açık Rıza Metni</Link>.
+                Onayını istediğin zaman buradan geri alabilirsin.
+              </span>
             </span>
           </label>
           {status && <p className="text-sm text-green-700">{status}</p>}

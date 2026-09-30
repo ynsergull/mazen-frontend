@@ -1,22 +1,39 @@
 import Link from "next/link";
-import { Asterisk } from "lucide-react";
+import { Mail, MapPin, Phone } from "lucide-react";
 
-import { LEGAL_NAV } from "@/components/legal/legal-pages";
 import { PaymentLogos } from "@/components/site/payment-logos";
-import { getCategoryTreeSafe, getStoreInfo } from "@/lib/api";
+import { getCategoryTreeSafe, getLegalPagesSafe, getStoreInfo } from "@/lib/api";
 import { categoryName } from "@/lib/category-name";
 
 import { Wordmark } from "./wordmark";
 import styles from "./storefront.module.css";
 
+/** "Yardım" sutununda gosterilen kurumsal sayfalar; alt bardaki yasal listede tekrarlanmaz. */
+const HELP_PAGES = ["hakkimizda", "iletisim", "sss", "teslimat-ve-kargo", "iade-ve-cayma"];
+
+/** Alt bilgi, yasal sayfa listesi API'ye ulasilamazsa bu cekirdek sayfalarla acilir. */
+const FALLBACK_LEGAL = [
+  { slug: "mesafeli-satis-sozlesmesi", title: "Mesafeli Satış Sözleşmesi" },
+  { slug: "on-bilgilendirme-formu", title: "Ön Bilgilendirme Formu" },
+  { slug: "gizlilik-politikasi", title: "Gizlilik Politikası" },
+  { slug: "kvkk", title: "KVKK Aydınlatma Metni" },
+  { slug: "cerez-politikasi", title: "Çerez Politikası" },
+];
+
 /** Tum sayfalarda kullanilan koyu yesil alt bilgi. */
 export async function StorefrontFooter() {
-  const [tree, store] = await Promise.all([getCategoryTreeSafe(), getStoreInfo()]);
+  const [tree, store, pages] = await Promise.all([getCategoryTreeSafe(), getStoreInfo(), getLegalPagesSafe()]);
   const business = store?.business;
+  const brand = business?.brand_name ?? "Mazen Kırtasiye";
+  const seller = business?.seller_name ? `${business.seller_name} – ${brand}` : brand;
   const popular = tree
     .filter((category) => (category.product_count ?? 0) > 0)
     .sort((a, b) => (b.product_count ?? 0) - (a.product_count ?? 0))
     .slice(0, 4);
+
+  const footerPages = pages.filter((page) => page.in_footer);
+  const help = footerPages.filter((page) => HELP_PAGES.includes(page.slug));
+  const legal = footerPages.length ? footerPages.filter((page) => !HELP_PAGES.includes(page.slug)) : FALLBACK_LEGAL;
 
   return (
     <footer className={styles.footer}>
@@ -43,72 +60,66 @@ export async function StorefrontFooter() {
         </div>
 
         <div>
-          <h2>Senin Mazen&rsquo;in</h2>
-          <Link href="/hesap" className={styles.footerLink}>
-            Hesabım
-          </Link>
+          <h2>Yardım</h2>
+          {(help.length ? help : [{ slug: "hakkimizda", title: "Hakkımızda" }, { slug: "iletisim", title: "İletişim" }]).map((page) => (
+            <Link key={page.slug} href={`/sayfa/${page.slug}`} className={styles.footerLink}>
+              {page.title}
+            </Link>
+          ))}
           <Link href="/hesap/siparisler" className={styles.footerLink}>
             Siparişlerim
           </Link>
-          <Link href="/hesap/adresler" className={styles.footerLink}>
-            Adreslerim
+          <Link href="/hesap" className={styles.footerLink}>
+            Hesabım
           </Link>
-          <Link href="/sepet" className={styles.footerLink}>
-            Sepetim
-          </Link>
-          <Link href="/sayfa/hakkimizda" className={styles.footerLink}>
-            Hakkımızda
-          </Link>
-          <Link href="/sayfa/iletisim" className={styles.footerLink}>
-            İletişim
-          </Link>
+        </div>
+
+        {/* iyzico ve Mesafeli Sozlesmeler Yon.: satici unvani, acik adres ve iletisim bilgisi her sayfada gorunur */}
+        <address className={styles.footerContact}>
+          <h2>Bize ulaşın</h2>
+          <p className={styles.footerContactName}>{seller}</p>
+          {business?.address && (
+            <p className={styles.footerContactLine}>
+              <MapPin aria-hidden="true" />
+              <span>{business.address}</span>
+            </p>
+          )}
           {business?.phone && (
-            <a href={`tel:${business.phone.replace(/\s/g, "")}`} className={styles.footerLink}>
-              {business.phone}
+            <a href={`tel:${business.phone.replace(/\s/g, "")}`} className={styles.footerContactLine}>
+              <Phone aria-hidden="true" />
+              <span>{business.phone}</span>
             </a>
           )}
           {business?.email && (
-            <a href={`mailto:${business.email}`} className={styles.footerLink}>
-              {business.email}
+            <a href={`mailto:${business.email}`} className={styles.footerContactLine}>
+              <Mail aria-hidden="true" />
+              <span>{business.email}</span>
             </a>
           )}
-        </div>
-
-        <div className={styles.footerMessage}>
-          <Asterisk size={40} aria-hidden="true" />
-          <p>
-            Yeni dönem,
-            <br />
-            <em>yeni defterler.</em>
-          </p>
+          {business?.tax_office && business.tax_number && (
+            <p className={styles.footerContactMeta}>{business.tax_office} VD · VKN {business.tax_number}</p>
+          )}
           {/* TODO: ETBIS karekodu kayit tamamlaninca buraya eklenecek. */}
-          <Link href="/urunler" className={styles.footerLink}>
-            Kataloğa göz at
-          </Link>
-        </div>
+        </address>
       </div>
 
       <nav className={`${styles.container} ${styles.footerLegal}`} aria-label="Yasal bilgiler">
-        {LEGAL_NAV.map((item) => (
-          <Link key={item.slug} href={`/sayfa/${item.slug}`}>
-            {item.label}
+        {legal.map((page) => (
+          <Link key={page.slug} href={`/sayfa/${page.slug}`}>
+            {page.title}
           </Link>
         ))}
       </nav>
 
-      {/* iyzico uye isyeri sarti: odeme logolari sitede gorunur olmali */}
+      {/* iyzico uye isyeri sarti: resmi "iyzico ile Öde" ve kart logolari alt bilgide gorunur olmali */}
       <div className={`${styles.container} ${styles.footerPayments}`}>
-        <PaymentLogos compact className="justify-center" />
+        <p>Ödemeleriniz lisanslı ödeme kuruluşu iyzico altyapısıyla, 3D Secure doğrulamasıyla alınır. Kart bilgileriniz bizde saklanmaz.</p>
+        <PaymentLogos />
       </div>
 
       <div className={`${styles.container} ${styles.footerBottom}`}>
-        <span>© {new Date().getFullYear()} {business?.brand_name ?? "Mazen Kırtasiye"}</span>
-        <span className={`${styles.footerNote} ${styles.footerSeller}`}>
-          {business?.seller_name && `${business.seller_name} · `}
-          {business?.address && `${business.address} · `}
-          {business?.tax_office && business.tax_number && `${business.tax_office} VD ${business.tax_number} · `}
-          Tüm fiyatlara KDV dahildir.
-        </span>
+        <span>© {new Date().getFullYear()} {seller}. Tüm hakları saklıdır.</span>
+        <span className={`${styles.footerNote} ${styles.footerSeller}`}>Tüm fiyatlara KDV dahildir.</span>
         <span>Yaz. Çiz. Boya. Keşfet.</span>
       </div>
     </footer>

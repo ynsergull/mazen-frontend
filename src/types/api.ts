@@ -136,6 +136,7 @@ export interface BusinessInfo {
   kep: string | null;
   return_address: string | null;
   dispatch_days: string | null;
+  carrier: string | null;
 }
 
 export interface StoreInfo {
@@ -207,6 +208,10 @@ export interface Order {
   shipping_address: OrderAddress | null;
   billing_address: OrderAddress | null;
   payment: { card_association: string | null; card_last_four: string | null; installment: number; paid_at: string | null } | null;
+  /** Onaylanan sozlesmelerin kopyasi var mi (GET /orders/{id}/agreements) */
+  has_agreements: boolean;
+  /** Son basarisiz odeme denemesinin Turkce nedeni (banka kodu / 3D Secure sonucundan) */
+  payment_error: string | null;
   shipments: OrderShipment[];
   placed_at: string | null;
   paid_at: string | null;
@@ -287,4 +292,29 @@ export interface AddressInput {
   tax_office: string;
   tax_number: string;
   is_default: boolean;
+}
+
+/** Alt bilgi ve sayfa altindaki gezinme icin yasal/kurumsal sayfa listesi (GET /pages) */
+export interface LegalPageLink {
+  slug: string;
+  title: string;
+  in_footer: boolean;
+}
+
+/** GET /pages/{slug}: satici bilgileriyle doldurulmus, admin'de yazilmis HTML */
+export interface LegalPageDetail {
+  slug: string;
+  title: string;
+  version: number;
+  updated_at: string | null;
+  html: string;
+}
+
+/** Odeme adiminda onaylatilan metin (onizleme) ya da siparise kaydedilmis kopyasi */
+export interface AgreementDocument {
+  slug: string;
+  title: string;
+  version: number;
+  html: string;
+  accepted_at?: string | null;
 }

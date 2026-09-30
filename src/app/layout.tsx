@@ -4,6 +4,7 @@ import { Suspense } from "react";
 
 import { AuthProvider } from "@/components/auth/auth-provider";
 import { CartProvider } from "@/components/cart/cart-provider";
+import { CookieNotice } from "@/components/site/cookie-notice";
 import { SiteFrame } from "@/components/site/site-frame";
 import { StorefrontFooter } from "@/components/site/storefront-footer";
 import { StorefrontHeader, StorefrontHeaderFallback } from "@/components/site/storefront-header";
@@ -33,6 +34,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
             >
               {children}
             </SiteFrame>
+            <CookieNotice />
           </CartProvider>
         </AuthProvider>
       </body>

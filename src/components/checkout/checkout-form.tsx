@@ -8,7 +8,8 @@ import { AddressFields, type AddressFieldsValue, EMPTY_ADDRESS_FIELDS, toAddress
 import { useAuth } from "@/components/auth/auth-provider";
 import { useCart } from "@/components/cart/cart-provider";
 import { Field, FormError } from "@/components/forms/field";
-import { PaymentLogos } from "@/components/site/payment-logos";
+import { AgreementsDialog, useAgreementsDialog } from "@/components/legal/agreements-dialog";
+import { IyzicoPayBadge } from "@/components/site/payment-logos";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Checkbox } from "@/components/ui/checkbox";
@@ -145,17 +146,9 @@ export function CheckoutForm({ store }: { store: StoreInfo }) {
     }
   }
 
-  async function onSubmit(event: FormEvent<HTMLFormElement>) {
-    event.preventDefault();
-    setBusy(true);
-    setErrors({});
-    setError(null);
-
-    const input: CheckoutInput = {
-      idempotency_key: idempotencyKey,
-      accept_terms: acceptTerms,
-      billing_same_as_shipping: billingSame,
-    };
+  /** Formdaki alici ve adres secimi: siparis istegi ve sozlesme onizlemesi ayni govdeyi kullanir. */
+  function buyerInput(): Omit<CheckoutInput, "idempotency_key" | "accept_terms"> {
+    const input: Omit<CheckoutInput, "idempotency_key" | "accept_terms"> = { billing_same_as_shipping: billingSame };
     if (!user) input.email = email;
     if (user && shippingChoice.kind === "saved") {
       input.shipping_address_id = shippingChoice.id;
@@ -167,6 +160,19 @@ export function CheckoutForm({ store }: { store: StoreInfo }) {
       if (user && billingChoice.kind === "saved") input.billing_address_id = billingChoice.id;
       else input.billing_address = toAddressPayload(billing);
     }
+    return input;
+  }
+
+  // Sozlesme metni her acilista formdaki guncel alici bilgisi ve sepetle yeniden doldurulur
+  const agreements = useAgreementsDialog(() => checkoutApi.agreements(buyerInput()));
+
+  async function onSubmit(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    setBusy(true);
+    setErrors({});
+    setError(null);
+
+    const input: CheckoutInput = { ...buyerInput(), idempotency_key: idempotencyKey, accept_terms: acceptTerms };
 
     try {
       const result = await checkoutApi.place(input);
@@ -306,8 +312,17 @@ export function CheckoutForm({ store }: { store: StoreInfo }) {
           <label className="flex items-start gap-2 text-xs leading-relaxed">
             <Checkbox className="mt-0.5" checked={acceptTerms} onCheckedChange={(checked) => setAcceptTerms(checked === true)} />
             <span>
-              <Link href="/sayfa/on-bilgilendirme-formu" target="_blank" className="underline">Ön Bilgilendirme Formu</Link>&rsquo;nu ve{" "}
-              <Link href="/sayfa/mesafeli-satis-sozlesmesi" target="_blank" className="underline">Mesafeli Satış Sözleşmesi</Link>&rsquo;ni okudum, onaylıyorum.
+              {/* Metinler alici ve sepet bilgileriyle doldurulmus halde pencerede acilir (Mesafeli Sozlesmeler Yon. m.5) */}
+              <span className="whitespace-nowrap">
+                <button type="button" className="font-medium underline underline-offset-2" onClick={() => agreements.show("on-bilgilendirme-formu")}>
+                  Ön Bilgilendirme Formu
+                </button>&rsquo;nu
+              </span>{" "}ve{" "}
+              <span className="whitespace-nowrap">
+                <button type="button" className="font-medium underline underline-offset-2" onClick={() => agreements.show("mesafeli-satis-sozlesmesi")}>
+                  Mesafeli Satış Sözleşmesi
+                </button>&rsquo;ni
+              </span>{" "}okudum, onaylıyorum.
             </span>
           </label>
           {errors.accept_terms && <p className="text-xs text-destructive" role="alert">{errors.accept_terms}</p>}
@@ -316,12 +331,21 @@ export function CheckoutForm({ store }: { store: StoreInfo }) {
             {busy ? <Loader2 className="size-4 animate-spin" /> : <Lock className="size-4" />}
             {busy ? "Ödeme sayfası açılıyor..." : `Güvenli öde · ${formatPrice(cart.total)}`}
           </Button>
+          {!acceptTerms && !busy && (
+            <p className="text-xs text-muted-foreground">Ödemeye geçmek için sözleşmeleri onaylayın.</p>
+          )}
+          <IyzicoPayBadge />
           <p className="text-xs text-muted-foreground">
             Kart bilgileriniz iyzico&rsquo;nun güvenli ödeme sayfasında alınır; sitemizde saklanmaz.
           </p>
-          <PaymentLogos compact />
         </CardContent>
       </Card>
+
+      <AgreementsDialog
+        dialog={agreements}
+        description="Metinler sepetinizdeki ürünler ve girdiğiniz bilgilerle doldurulmuştur. Siparişten sonra bir kopyası e-posta adresinize gönderilir."
+        onAccept={() => setAcceptTerms(true)}
+      />
     </form>
   );
 }

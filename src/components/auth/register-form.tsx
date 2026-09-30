@@ -190,8 +190,8 @@ export function RegisterForm() {
               aria-invalid={errors.terms ? true : undefined}
             />
             <span>
-              <Link href="/sayfa/uyelik-sozlesmesi" target="_blank">Üyelik sözleşmesini</Link> okudum ve kabul
-              ediyorum. Kişisel verilerimin <Link href="/sayfa/kvkk" target="_blank">KVKK aydınlatma metni</Link>{" "}
+              <Link href="/sayfa/uyelik-sozlesmesi" target="_blank">Üyelik sözleşmesi ve kullanım koşullarını</Link> okudum
+              ve kabul ediyorum. Kişisel verilerimin <Link href="/sayfa/kvkk" target="_blank">KVKK aydınlatma metni</Link>{" "}
               kapsamında işleneceğini biliyorum.
             </span>
           </label>
@@ -207,8 +207,9 @@ export function RegisterForm() {
             onCheckedChange={(checked) => setForm((f) => ({ ...f, marketing: checked === true }))}
           />
           <span className={styles.muted}>
-            Kampanya ve okula dönüş fırsatlarından e-posta/SMS ile haberdar olmak istiyorum. (İsteğe bağlı, istediğin
-            zaman hesabından kapatabilirsin.)
+            Kampanya ve okula dönüş fırsatlarından e-posta/SMS ile haberdar olmak için{" "}
+            <Link href="/sayfa/acik-riza-metni" target="_blank">Açık Rıza Metni</Link>&rsquo;ni okudum, onay veriyorum.
+            (İsteğe bağlı, istediğin zaman hesabından kapatabilirsin.)
           </span>
         </label>
       </div>

@@ -1,33 +1,46 @@
+import Image from "next/image";
+import { ShieldCheck } from "lucide-react";
+
 import { cn } from "@/lib/utils";
 
 /*
- * Odeme bolumu ve alt bilgide gosterilmesi zorunlu logolar (iyzico uye isyeri sarti: "iyzico ile Ode",
- * Visa, Mastercard). Simdilik metin rozetleri; iyzico panelindeki logo paketi indirilince
- * public/images/payment/ altina konup buradaki rozetler <Image> ile degistirilecek.
+ * iyzico uye isyeri sarti: resmi logolar sitede gorunur olmali. Dosyalar iyzico'nun logo paketinden
+ * (docs.iyzico.com > Ek Bilgiler > iyzico Logo Paketi) degistirilmeden alindi: public/payment/.
+ * Logo bandi acik zemin icin tasarlandi; koyu alt bilgide beyaz kutu icinde gosterilir.
  */
-const BADGES: { label: string; className: string }[] = [
-  { label: "iyzico ile öde", className: "bg-[#1e64ff] text-white" },
-  { label: "VISA", className: "bg-white text-[#1a1f71] italic font-black" },
-  { label: "Mastercard", className: "bg-white text-[#eb001b]" },
-  { label: "TROY", className: "bg-white text-[#00a7e1]" },
-];
 
+/** "iyzico ile Öde" + Mastercard, Visa, American Express, Troy bandi (alt bilgi, sepet, odeme). */
 export function PaymentLogos({ className, compact = false }: { className?: string; compact?: boolean }) {
   return (
-    <ul aria-label="Kabul edilen ödeme yöntemleri" className={cn("flex flex-wrap items-center gap-2", className)}>
-      {BADGES.map((badge) => (
-        <li
-          key={badge.label}
-          className={cn(
-            "inline-flex items-center rounded-md border border-black/10 font-semibold tracking-tight",
-            compact ? "h-6 px-2 text-[10px]" : "h-8 px-3 text-xs",
-            badge.className,
-          )}
-        >
-          {badge.label}
-        </li>
-      ))}
-      <li className={cn("text-muted-foreground", compact ? "text-[10px]" : "text-xs")}>3D Secure ile güvenli ödeme</li>
-    </ul>
+    <div className={cn("inline-flex max-w-full items-center rounded-md bg-white px-3 py-2 ring-1 ring-black/10", className)}>
+      <Image
+        src="/payment/iyzico-logo-band-colored.svg"
+        alt="iyzico ile Öde; Mastercard, Visa, American Express ve Troy kartlarla güvenli ödeme"
+        width={429}
+        height={32}
+        unoptimized
+        className={cn("w-auto max-w-full", compact ? "h-5" : "h-6")}
+      />
+    </div>
+  );
+}
+
+/** Odeme butonunun altinda: "iyzico ile Öde" logosu ve 3D Secure notu. */
+export function IyzicoPayBadge({ className }: { className?: string }) {
+  return (
+    <div className={cn("flex flex-wrap items-center justify-between gap-2", className)}>
+      <Image
+        src="/payment/iyzico-ile-ode-colored.svg"
+        alt="iyzico ile Öde"
+        width={210}
+        height={31}
+        unoptimized
+        className="h-6 w-auto"
+      />
+      <span className="inline-flex items-center gap-1 text-xs text-muted-foreground">
+        <ShieldCheck className="size-3.5" aria-hidden="true" />
+        3D Secure ile güvenli ödeme
+      </span>
+    </div>
   );
 }
